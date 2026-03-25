@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registros Calificados</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Registros Calificados</h1>
+    <form id="form">
+        <input type="text" id="codigo" placeholder="Código (PK)" required>
+        <input type="number" id="cant_creditos" placeholder="Cant. Créditos" required>
+        <input type="number" id="hora_acom" placeholder="Horas Acompañamiento" required>
+        <input type="number" id="hora_ind" placeholder="Horas Independientes" required>
+        <input type="text" id="metodologia" placeholder="Metodología" required>
+        <label for="fecha_inicio">Fecha Inicio:</label>
+        <input type="date" id="fecha_inicio" required>
+        <label for="fecha_fin">Fecha Fin:</label>
+        <input type="date" id="fecha_fin" required>
+        <input type="number" id="duracion_anios" placeholder="Duración Años" required>
+        <input type="number" id="duracion_semestres" placeholder="Duración Semestres" required>
+        <input type="text" id="tipo_titulacion" placeholder="Tipo Titulación" required>
+        <select id="programa_id" required>
+            <option value="">Seleccione Programa (FK)...</option>
+            <option value="1">Programa Ejemplo</option>
+        </select>
+        <button type="submit">Guardar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Código (PK)</th>
+                <th>Créditos</th>
+                <th>Metodología</th>
+                <th>Vigencia</th>
+                <th>Programa FK</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla">
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

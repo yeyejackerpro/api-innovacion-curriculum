@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pasantías</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Pasantías</h1>
+    <form id="form">
+        <input type="text" id="nombre" placeholder="Nombre Pasantía" required>
+        <input type="text" id="pais" placeholder="País" required>
+        <input type="text" id="empresa" placeholder="Empresa" required>
+        <input type="text" id="descripcion" placeholder="Descripción" required>
+        <select id="programa_id" required>
+            <option value="">Seleccione Programa (FK)...</option>
+            <option value="1">Programa Ejemplo</option>
+        </select>
+        <button type="submit">Guardar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Empresa</th>
+                <th>País</th>
+                <th>Programa FK</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla">
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

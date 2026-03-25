@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>aliados</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Aliados</h1>
+        <form id="form">
+            <input type="text" id="nit" placeholder="NIT" required>
+            <input type="text" id="razon_social" placeholder="Razon Social" required>
+            <input type="text" id="nombre_contacto" placeholder="Nombre Contacto" required>
+            <input type="text" id="correo" placeholder="Correo"required>
+            <input type="text" id="telefono" placeholder="Telefono"required>
+            <input type="text" id="ciudad" placeholder="Ciudad" required>            
+            <button>Guardar</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>NIT</th><th>Razon Social</th><th>Contacto</th><th>Correo</th><th>Telefono</th><th>Ciudad</th><th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla"></tbody>
+    </div>
+
+<script>
+const API = "http://localhost:3000/aliado";
+
+async function cargar() {
+    const res = await fetch(API);
+    const data = await res.json();
+    const tabla = document.getElementById("tabla");
+    if (!tabla) return;
+    tabla.innerHTML = "";
+    data.forEach(d => {
+        tabla.innerHTML += `
+            <tr>
+                <td>${d.nit}</td>
+                <td>${d.razon_social}</td>
+                <td>${d.nombre_contacto}</td>
+                <td>${d.correo}</td>
+                <td>${d.telefono}</td>
+                <td>${d.ciudad}</td>
+                <td><button onclick="eliminar('${d.nit}')">Eliminar</button></td>
+            </tr>
+        `;
+    });
+}
+const form = document.getElementById("form");
+if (form) {
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        let datos = {};
+        [...form.elements].forEach(el => {
+            if (el.id && el.tagName !== "BUTTON") datos[el.id] = el.value;
+        });
+        await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(datos) });
+        form.reset();
+        cargar();
+    });
+}
+async function eliminar(nit) { await fetch(API + "/" + nit, { method: "DELETE" }); cargar(); }
+cargar();
+</script>
+</body>
+</html>

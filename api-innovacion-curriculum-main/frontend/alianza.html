@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Alianzas</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Gestión de Alianzas</h1>
+    <form id="form">
+        <select id="aliado_nit" required>
+            <option value="">Seleccione Aliado (FK)...</option>
+            <option value="1">Aliado Ejemplo</option>
+        </select>
+        <select id="programa_id" required>
+            <option value="">Seleccione Programa (FK)...</option>
+            <option value="1">Programa Ejemplo</option>
+        </select>
+        <label for="fecha_inicio">Fecha Inicio:</label>
+        <input type="date" id="fecha_inicio" required>
+        <label for="fecha_fin">Fecha Fin:</label>
+        <input type="date" id="fecha_fin" required>
+        <input type="text" id="docente" placeholder="Docente Encargado" required>
+        <button type="submit">Registrar Alianza</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Aliado FK</th>
+                <th>Programa FK</th>
+                <th>Vigencia</th>
+                <th>Docente</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla">
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

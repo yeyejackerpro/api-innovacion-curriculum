@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Programas Académicos</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Programas Académicos</h1>
+    <form id="form">
+        <input type="text" id="nombre" placeholder="Nombre" required>
+        <input type="text" id="tipo" placeholder="Tipo (ej. Pregrado)" required>
+        <input type="text" id="nivel" placeholder="Nivel" required>
+        <label for="fecha_creacion">Creación:</label>
+        <input type="date" id="fecha_creacion" required>
+        <label for="fecha_cierre">Cierre:</label>
+        <input type="date" id="fecha_cierre">
+        <input type="number" id="numero_cohortes" placeholder="Nº Cohortes" required>
+        <input type="number" id="cant_graduados" placeholder="Cant. Graduados" required>
+        <label for="fecha_actualizacion">Actualización:</label>
+        <input type="date" id="fecha_actualizacion">
+        <input type="text" id="ciudad" placeholder="Ciudad" required>
+        <select id="facultad_id" required>
+            <option value="">Seleccione Facultad (FK)...</option>
+            <option value="1">Facultad Ejemplo</option>
+        </select>
+        <button type="submit">Guardar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Nivel</th>
+                <th>Ciudad</th>
+                <th>Facultad FK</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla">
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

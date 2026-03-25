@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Actividades Académicas</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Actividades Académicas</h1>
+    <form id="form">
+        <input type="text" id="nombre" placeholder="Nombre (Materia/Curso)" required>
+        <input type="number" id="num_creditos" placeholder="Créditos" required>
+        <input type="text" id="tipo" placeholder="Tipo" required>
+        <input type="text" id="area_formacion" placeholder="Área Formación" required>
+        <input type="number" id="h_acom" placeholder="H. Acompañamiento" required>
+        <input type="number" id="h_indep" placeholder="H. Independientes" required>
+        <input type="text" id="idioma" placeholder="Idioma" required>
+        
+        <label>
+            <input type="checkbox" id="espejo"> ¿Es Tipo Espejo?
+        </label>
+        <input type="text" id="entidad_espejo" placeholder="Entidad Espejo (Opcional)">
+        <input type="text" id="pais_espejo" placeholder="País Espejo (Opcional)">
+        
+        <select id="programa_id" required>
+            <option value="">Seleccione Programa (FK)...</option>
+            <option value="1">Programa Ejemplo</option>
+        </select>
+        <button type="submit">Guardar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Créditos</th>
+                <th>Área Formación</th>
+                <th>Programa FK</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla">
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Asignación Programa - Área de Conocimiento</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Asignar Área de Conocimiento a Programa</h1>
+    <form id="form">
+        <select id="programa_id" required>
+            <option value="">Seleccione Programa (FK)...</option>
+            <option value="1">Programa Ejemplo</option>
+        </select>
+        <select id="area_conocimiento_id" required>
+            <option value="">Seleccione Área de Conocimiento (FK)...</option>
+            <option value="1">Área Ejemplo</option>
+        </select>
+        <button type="submit">Asignar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Programa FK</th>
+                <th>Área FK</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla">
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
