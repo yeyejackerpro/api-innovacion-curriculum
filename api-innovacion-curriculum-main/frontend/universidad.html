@@ -8,14 +8,14 @@
 <body>
 <div class="container">
     <h1>Universidades</h1>
-    <form id="form">
-        <input type="text" id="nombre" placeholder="Nombre" required>
-        <select id="tipo" required>
+    <form action="http://localhost:8000/api/universidad" method="POST">
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <select name="tipo" required>
             <option value="">Seleccione Tipo...</option>
             <option value="Seccional">Seccional</option>
             <option value="Extensión">Extensión</option>
         </select>
-        <input type="text" id="ciudad" placeholder="Ciudad" required>
+        <input type="text" name="ciudad" placeholder="Ciudad" required>
         <button type="submit">Guardar</button>
     </form>
     <table>
@@ -29,8 +29,18 @@
             </tr>
         </thead>
         <tbody id="tabla">
-           
+            {% for u in universidades %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.nombre }}</td>
+                <td>{{ u.tipo }}</td>
+                <td>{{ u.ciudad }}</td>
+                <td>-</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 </div>
+
 </body>
 </html>

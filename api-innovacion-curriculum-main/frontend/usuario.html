@@ -8,13 +8,13 @@
 <body>
 <div class="container">
     <h1>Gestión de Usuarios</h1>
-    <form id="form">
-        <input type="text" id="username" placeholder="Nombre de Usuario" required>
-        <input type="email" id="email" placeholder="Correo Electrónico" required>
-        <input type="text" id="nombre_completo" placeholder="Nombre Completo" required>
-        <input type="password" id="password" placeholder="Contraseña" required>
+    <form action="http://localhost:8000/api/usuario" method="POST">
+        <input type="text" name="username" id="username" placeholder="Nombre de Usuario" required>
+        <input type="email" name="email" id="email" placeholder="Correo Electrónico" required>
+        <input type="text" name="nombre_completo" id="nombre_completo" placeholder="Nombre Completo" required>
+        <input type="password" name="password" id="password" placeholder="Contraseña" required>
         <label>
-            <input type="checkbox" id="activo" checked> Activo
+            <input type="checkbox" name="activo" id="activo" checked> Activo
         </label>
         <button type="submit">Crear Usuario</button>
     </form>

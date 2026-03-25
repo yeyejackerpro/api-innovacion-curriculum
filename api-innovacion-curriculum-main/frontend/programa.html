@@ -8,22 +8,24 @@
 <body>
 <div class="container">
     <h1>Programas Académicos</h1>
-    <form id="form">
-        <input type="text" id="nombre" placeholder="Nombre" required>
-        <input type="text" id="tipo" placeholder="Tipo (ej. Pregrado)" required>
-        <input type="text" id="nivel" placeholder="Nivel" required>
+    <form action="http://localhost:8000/api/programa" method="POST">
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <input type="text" name="tipo" placeholder="Tipo (ej. Pregrado)" required>
+        <input type="text" name="nivel" placeholder="Nivel" required>
         <label for="fecha_creacion">Creación:</label>
-        <input type="date" id="fecha_creacion" required>
+        <input type="date" name="fecha_creacion" required>
         <label for="fecha_cierre">Cierre:</label>
-        <input type="date" id="fecha_cierre">
-        <input type="number" id="numero_cohortes" placeholder="Nº Cohortes" required>
-        <input type="number" id="cant_graduados" placeholder="Cant. Graduados" required>
+        <input type="date" name="fecha_cierre">
+        <input type="number" name="numero_cohortes" placeholder="Nº Cohortes" required>
+        <input type="number" name="cant_graduados" placeholder="Cant. Graduados" required>
         <label for="fecha_actualizacion">Actualización:</label>
-        <input type="date" id="fecha_actualizacion">
-        <input type="text" id="ciudad" placeholder="Ciudad" required>
-        <select id="facultad_id" required>
+        <input type="date" name="fecha_actualizacion">
+        <input type="text" name="ciudad" placeholder="Ciudad" required>
+        <select name="facultad_id" required>
             <option value="">Seleccione Facultad (FK)...</option>
-            <option value="1">Facultad Ejemplo</option>
+            {% for f in facultades %}
+            <option value="{{ f.id }}">{{ f.nombre }}</option>
+            {% endfor %}
         </select>
         <button type="submit">Guardar</button>
     </form>
@@ -40,8 +42,20 @@
             </tr>
         </thead>
         <tbody id="tabla">
+            {% for p in programas %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.nombre }}</td>
+                <td>{{ p.tipo }}</td>
+                <td>{{ p.nivel }}</td>
+                <td>{{ p.ciudad }}</td>
+                <td>{{ p.facultad_id }}</td>
+                <td>-</td>
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>
+
 </body>
 </html>

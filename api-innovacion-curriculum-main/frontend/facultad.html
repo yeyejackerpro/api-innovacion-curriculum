@@ -8,17 +8,17 @@
 <body>
 <div class="container">
     <h1>Facultades</h1>
-    <form id="form">
-        <input type="text" id="nombre" placeholder="Nombre" required>
-        <select id="tipo" required>
+    <form action="http://localhost:8000/api/facultad" method="POST">
+        <input type="text" name="nombre" id="nombre" placeholder="Nombre" required>
+        <select name="tipo" id="tipo" required>
             <option value="">Seleccione Tipo...</option>
             <option value="Facultad">Facultad</option>
             <option value="Departamento">Departamento</option>
             <option value="Instituto">Instituto</option>
         </select>
         <label for="fecha_fun">Fecha Fundación:</label>
-        <input type="date" id="fecha_fun" required>
-        <select id="universidad_id" required>
+        <input type="date" name="fecha_fun" id="fecha_fun" required>
+        <select name="universidad_id" id="universidad_id" required>
             <option value="">Seleccione Universidad (FK)...</option>
             <option value="1">Universidad Ejemplo</option>
         </select>

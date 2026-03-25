@@ -8,12 +8,12 @@
 <body>
 <div class="container">
     <h1>Asignar Práctica/Estrategia a Programa</h1>
-    <form id="form">
-        <select id="programa_id" required>
+    <form action="http://localhost:8000/api/programape" method="POST">
+        <select name="programa_id" id="programa_id" required>
             <option value="">Seleccione Programa (FK)...</option>
             <option value="1">Programa Ejemplo</option>
         </select>
-        <select id="practica_estrategia_id" required>
+        <select name="practica_estrategia_id" id="practica_estrategia_id" required>
             <option value="">Seleccione Práctica / Estrategia (FK)...</option>
             <option value="1">Práctica Ejemplo</option>
         </select>

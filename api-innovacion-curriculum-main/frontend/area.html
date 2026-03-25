@@ -10,10 +10,10 @@
 <div class="container">
 <h1>Área de Conocimiento</h1>
 
-<form id="form">
-<input type="text" id="gran_area" placeholder="Gran Área" required>
-<input type="text" id="area" placeholder="Área" required>
-<input type="text" id="disciplina" placeholder="Disciplina" required>
+<form action="http://localhost:8000/api/areaconocimiento" method="POST">
+<input type="text" name="gran_area" id="gran_area" placeholder="Gran Área" required>
+<input type="text" name="area" id="area" placeholder="Área" required>
+<input type="text" name="disciplina" id="disciplina" placeholder="Disciplina" required>
 <button>Guardar</button>
 </form>
 
@@ -28,42 +28,6 @@
 
 </div>
 
-<script>
-const API = "http://localhost:3000/area_conocimiento";
 
-async function cargar() {
-    const res = await fetch(API);
-    const data = await res.json();
-    const tabla = document.getElementById("tabla");
-    if (!tabla) return;
-    tabla.innerHTML = "";
-    data.forEach(d => {
-        tabla.innerHTML += `
-            <tr>
-                <td>${d.id}</td>
-                <td>${d.gran_area}</td>
-                <td>${d.area}</td>
-                <td>${d.disciplina}</td>
-                <td><button onclick="eliminar('${d.id}')">Eliminar</button></td>
-            </tr>
-        `;
-    });
-}
-const form = document.getElementById("form");
-if (form) {
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        let datos = {};
-        [...form.elements].forEach(el => {
-            if (el.id && el.tagName !== "BUTTON") datos[el.id] = el.value;
-        });
-        await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(datos) });
-        form.reset();
-        cargar();
-    });
-}
-async function eliminar(id) { await fetch(API + "/" + id, { method: "DELETE" }); cargar(); }
-cargar();
-</script>
 </body>
 </html>

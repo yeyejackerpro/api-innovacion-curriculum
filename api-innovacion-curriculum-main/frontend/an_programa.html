@@ -8,12 +8,12 @@
 <body>
 <div class="container">
     <h1>Asignar Aspecto Normativo a Programa</h1>
-    <form id="form">
-        <select id="programa_id" required>
+    <form action="http://localhost:8000/api/anprograma" method="POST">
+        <select name="programa_id" id="programa_id" required>
             <option value="">Seleccione Programa (FK)...</option>
             <option value="1">Programa Ejemplo</option>
         </select>
-        <select id="aspecto_normativo_id" required>
+        <select name="aspecto_normativo_id" id="aspecto_normativo_id" required>
             <option value="">Seleccione Aspecto Normativo (FK)...</option>
             <option value="1">Norma Ejemplo</option>
         </select>

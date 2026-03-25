@@ -8,12 +8,12 @@
 <body>
 <div class="container">
     <h1>Asignar Rol a Usuario</h1>
-    <form id="form">
-        <select id="usuario_id" required>
+    <form action="http://localhost:8000/api/rolusuario" method="POST">
+        <select name="usuario_id" id="usuario_id" required>
             <option value="">Seleccione Usuario (FK)...</option>
             <option value="1">Usuario Ejemplo</option>
         </select>
-        <select id="rol_id" required>
+        <select name="rol_id" id="rol_id" required>
             <option value="">Seleccione Rol (FK)...</option>
             <option value="1">Admin</option>
         </select>

@@ -8,12 +8,12 @@
 <body>
 <div class="container">
     <h1>Asignar Área de Conocimiento a Programa</h1>
-    <form id="form">
-        <select id="programa_id" required>
+    <form action="http://localhost:8000/api/programaac" method="POST">
+        <select name="programa_id" id="programa_id" required>
             <option value="">Seleccione Programa (FK)...</option>
             <option value="1">Programa Ejemplo</option>
         </select>
-        <select id="area_conocimiento_id" required>
+        <select name="area_conocimiento_id" id="area_conocimiento_id" required>
             <option value="">Seleccione Área de Conocimiento (FK)...</option>
             <option value="1">Área Ejemplo</option>
         </select>

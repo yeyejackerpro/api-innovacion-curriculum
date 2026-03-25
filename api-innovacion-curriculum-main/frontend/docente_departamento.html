@@ -8,26 +8,26 @@
 <body>
 <div class="container">
     <h1>Vinculación Docente a Programa</h1>
-    <form id="form">
-        <select id="docente_id" required>
+    <form action="http://localhost:8000/api/docentedepartamento" method="POST">
+        <select name="docente_id" id="docente_id" required>
             <option value="">Seleccione Docente (FK)...</option>
             <option value="1">Docente Ejemplo</option>
         </select>
-        <select id="programa_id" required>
+        <select name="programa_id" id="programa_id" required>
             <option value="">Seleccione Programa/Dpto (FK)...</option>
             <option value="1">Programa Ejemplo</option>
         </select>
-        <select id="dedicacion" required>
+        <select name="dedicacion" id="dedicacion" required>
             <option value="">Seleccione Dedicación...</option>
             <option value="Tiempo Completo">Tiempo Completo</option>
             <option value="Medio Tiempo">Medio Tiempo</option>
             <option value="Cátedra">Cátedra</option>
         </select>
-        <input type="text" id="modalidad" placeholder="Modalidad" required>
+        <input type="text" name="modalidad" id="modalidad" placeholder="Modalidad" required>
         <label for="fecha_ingreso">Ingreso:</label>
-        <input type="date" id="fecha_ingreso" required>
+        <input type="date" name="fecha_ingreso" id="fecha_ingreso" required>
         <label for="fecha_salida">Salida:</label>
-        <input type="date" id="fecha_salida">
+        <input type="date" name="fecha_salida" id="fecha_salida">
         <button type="submit">Vincular</button>
     </form>
     <table>

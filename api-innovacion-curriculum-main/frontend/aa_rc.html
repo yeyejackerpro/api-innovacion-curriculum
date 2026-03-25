@@ -8,17 +8,17 @@
 <body>
 <div class="container">
     <h1>Vincular Actividad Académica y RC</h1>
-    <form id="form">
-        <select id="codigo_rc" required>
+    <form action="http://localhost:8000/api/aarc" method="POST">
+        <select name="codigo_rc" id="codigo_rc" required>
             <option value="">Seleccione Registro Calificado (FK)...</option>
             <option value="1">RC Ejemplo</option>
         </select>
-        <select id="actividad_id" required>
+        <select name="actividad_id" id="actividad_id" required>
             <option value="">Seleccione Actividad Académica (FK)...</option>
             <option value="1">Actividad Ejemplo</option>
         </select>
-        <input type="text" id="componente" placeholder="Componente" required>
-        <input type="number" id="semestre" placeholder="Semestre" required>
+        <input type="text" name="componente" id="componente" placeholder="Componente" required>
+        <input type="number" name="semestre" id="semestre" placeholder="Semestre" required>
         <button type="submit">Asignar</button>
     </form>
     <table>
