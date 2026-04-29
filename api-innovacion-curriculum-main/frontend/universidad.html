@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Universidades</title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="container">
@@ -21,24 +21,10 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Tipo</th>
-                <th>Ciudad</th>
-                <th>Acciones</th>
+                <th>ID</th> <th>Nombre</th> <th>Tipo</th> <th>Ciudad</th> <th>Acciones</th>
             </tr>
         </thead>
-        <tbody id="tabla">
-            {% for u in universidades %}
-            <tr>
-                <td>{{ u.id }}</td>
-                <td>{{ u.nombre }}</td>
-                <td>{{ u.tipo }}</td>
-                <td>{{ u.ciudad }}</td>
-                <td>-</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+        <tbody id="tabla"></tbody>
     </table>
 </div>
 

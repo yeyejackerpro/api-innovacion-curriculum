@@ -93,3 +93,133 @@ th {
         width: 100%;
     }
 }
+
+/* universidaddddada */
+body {
+    background-color: #f1f3f6;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 85%;
+    margin: 30px auto;
+}
+
+.titulo {
+    text-align: center;
+    font-size: 50px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.form-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.form-container input,
+.form-container select {
+    flex: 1;
+    min-width: 180px;
+    padding: 12px;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.form-container button {
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    padding: 12px 35px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background-color: #0b5ed7;
+}
+
+.tabla-estilo {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.tabla-estilo thead {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.tabla-estilo th,
+.tabla-estilo td {
+    padding: 15px;
+    text-align: center;
+}
+
+.tabla-estilo tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+/* area conocimientoooo */
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+}
+
+.container {
+    width: 90%;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.form-grid input,
+.form-grid select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-grid button {
+    grid-column: span 4;
+    padding: 10px;
+    background: #1e73e8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #1e73e8;
+    color: white;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
