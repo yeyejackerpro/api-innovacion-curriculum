@@ -39,5 +39,29 @@
         </tbody>
     </table>
 </div>
+
+<script>
+window.onload = function() {
+    fetch("http://localhost:8000/api/facultad")
+        .then(response => response.json())
+        .then(data => {
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = "";
+            data.forEach(objeto => {
+                tabla.innerHTML += `
+                    <tr>
+                        <td>${objeto.id}</td>
+                        <td>${objeto.nombre}</td>
+                        <td>${objeto.tipo}</td>
+                        <td>${objeto.fecha_fun}</td>
+                        <td>${objeto.universidad}</td>
+                        <td>Editar | Eliminar</td>
+                    </tr>
+                `;
+            });
+        });
+};
+</script>
+
 </body>
 </html>

@@ -37,5 +37,29 @@
         </tbody>
     </table>
 </div>
+
+<script>
+window.onload = function() {
+    fetch("http://localhost:8000/api/acreditacion")
+        .then(response => response.json())
+        .then(data => {
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = "";
+            data.forEach(objeto => {
+                tabla.innerHTML += `
+                    <tr>
+                        <td>${objeto.resolucion}</td>
+                        <td>${objeto.tipo}</td>
+                        <td>${objeto.calificacion}</td>
+                        <td>${objeto.fechas}</td>
+                        <td>${objeto.programa}</td>
+                        <td>Editar | Eliminar</td>
+                    </tr>
+                `;
+            });
+        });
+};
+</script>
+
 </body>
 </html>

@@ -57,5 +57,29 @@
     </table>
 </div>
 
+<script>
+window.onload = function() {
+    fetch("http://localhost:8000/api/programa")
+        .then(response => response.json())
+        .then(data => {
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = "";
+            data.forEach(objeto => {
+                tabla.innerHTML += `
+                    <tr>
+                        <td>${objeto.id}</td>
+                        <td>${objeto.nombre}</td>
+                        <td>${objeto.tipo}</td>
+                        <td>${objeto.nivel}</td>
+                        <td>${objeto.ciudad}</td>
+                        <td>${objeto.facultad_fk}</td>
+                        <td>Editar | Eliminar</td>
+                    </tr>
+                `;
+            });
+        });
+};
+</script>
+
 </body>
 </html>

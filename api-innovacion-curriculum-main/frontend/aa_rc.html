@@ -35,5 +35,28 @@
         </tbody>
     </table>
 </div>
+
+<script>
+window.onload = function() {
+    fetch("http://localhost:8000/api/aarc")
+        .then(response => response.json())
+        .then(data => {
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = "";
+            data.forEach(objeto => {
+                tabla.innerHTML += `
+                    <tr>
+                        <td>${objeto.rc_fk}</td>
+                        <td>${objeto.actividad_fk}</td>
+                        <td>${objeto.componente}</td>
+                        <td>${objeto.semestre}</td>
+                        <td>Editar | Eliminar</td>
+                    </tr>
+                `;
+            });
+        });
+};
+</script>
+
 </body>
 </html>

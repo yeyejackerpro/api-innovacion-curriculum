@@ -27,6 +27,33 @@
         <tbody id="tabla"></tbody>
     </table>
 </div>
+<script>
+async function cargarUniversidades() {
+    try {
+        const response = await fetch("http://localhost:8000/api/universidad");
+        const data = await response.json();
 
+        const tabla = document.getElementById("tabla");
+        tabla.innerHTML = "";
+
+        data.forEach(universidad => {
+            tabla.innerHTML += `
+                <tr>
+                    <td>${universidad.id}</td>
+                    <td>${universidad.nombre}</td>
+                    <td>${universidad.tipo}</td>
+                    <td>${universidad.ciudad}</td>
+                    <td>Editar | Eliminar</td>
+                </tr>
+            `;
+        });
+
+    } catch (error) {
+        console.error("Error cargando universidades:", error);
+    }
+}
+
+cargarUniversidades();
+</script>
 </body>
 </html>

@@ -31,5 +31,26 @@
         </tbody>
     </table>
 </div>
+
+<script>
+window.onload = function() {
+    fetch("http://localhost:8000/api/enfoquerc")
+        .then(response => response.json())
+        .then(data => {
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = "";
+            data.forEach(objeto => {
+                tabla.innerHTML += `
+                    <tr>
+                        <td>${objeto.rc_fk}</td>
+                        <td>${objeto.enfoque_fk}</td>
+                        <td>Editar | Eliminar</td>
+                    </tr>
+                `;
+            });
+        });
+};
+</script>
+
 </body>
 </html>

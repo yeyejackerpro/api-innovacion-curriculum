@@ -28,6 +28,35 @@
             <tbody id="tabla"></tbody>
     </div>
 
+<script>
+async function cargarAliados() {
+    try {
+        const response = await fetch("http://localhost:8000/api/aliado");
+        const data = await response.json();
 
+        const tabla = document.getElementById("tabla");
+        tabla.innerHTML = "";
+
+        data.forEach(aliado => {
+            tabla.innerHTML += `
+                <tr>
+                    <td>${aliado.nit}</td>
+                    <td>${aliado.razon_social}</td>
+                    <td>${aliado.nombre_contacto}</td>
+                    <td>${aliado.correo}</td>
+                    <td>${aliado.telefono}</td>
+                    <td>${aliado.ciudad}</td>
+                    <td>Editar | Eliminar</td>
+                </tr>
+            `;
+        });
+
+    } catch (error) {
+        console.error("Error cargando aliados:", error);
+    }
+}
+
+cargarAliados();
+</script>
 </body>
 </html>

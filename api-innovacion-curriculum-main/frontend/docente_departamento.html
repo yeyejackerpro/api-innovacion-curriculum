@@ -44,5 +44,28 @@
         </tbody>
     </table>
 </div>
+
+<script>
+window.onload = function() {
+    fetch("http://localhost:8000/api/docentedepartamento")
+        .then(response => response.json())
+        .then(data => {
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = "";
+            data.forEach(objeto => {
+                tabla.innerHTML += `
+                    <tr>
+                        <td>${objeto.docente}</td>
+                        <td>${objeto.programa}</td>
+                        <td>${objeto.dedicacion}</td>
+                        <td>${objeto.vigencia}</td>
+                        <td>Editar | Eliminar</td>
+                    </tr>
+                `;
+            });
+        });
+};
+</script>
+
 </body>
 </html>
