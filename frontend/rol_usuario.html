@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Asignación de Roles</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Asignar Rol a Usuario</h1>
+    <form id="form-rol_usuario">
+        <input type="hidden" id="usuario_registro" name="usuario_registro">
+        <input type="hidden" id="rol_registro" name="rol_registro">
+        <select name="usuario_id" id="usuario_id" required>
+            <option value="">Seleccione Usuario...</option>
+        </select>
+        <select name="rol_id" id="rol_id" required>
+            <option value="">Seleccione Rol...</option>
+        </select>
+        <button type="submit" id="btn-submit">Asignar Rol</button>
+        <button type="button" id="btn-cancelar" style="display:none;">Cancelar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let registroEnEdicion = null;
+    let usuariosMap = {};
+    let rolesMap = {};
+
+    function cargarUsuarios() {
+        fetch("http://localhost:8000/api/usuario")
+        .then(response => {
+            if (response.status === 204) return { datos: [] };
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            const select = document.getElementById("usuario_id");
+            select.innerHTML = '<option value="">Seleccione Usuario...</option>';
+            if (data.datos && data.datos.length > 0) {
+                data.datos.forEach(obj => {
+                    usuariosMap[obj.id] = obj.nombre_completo;
+                    select.innerHTML += `<option value="${obj.id}">${obj.nombre_completo} (${obj.username})</option>`;
+                });
+            } else {
+                select.innerHTML = '<option value="">No hay usuarios disponibles</option>';
+            }
+        })
+        .catch(error => {
+            console.error("Error cargando usuarios:", error);
+            document.getElementById("usuario_id").innerHTML = `<option value="">Error: ${error.message}</option>`;
+        });
+    }
+
+    function cargarRoles() {
+        fetch("http://localhost:8000/api/rol")
+        .then(response => {
+            if (response.status === 204) return { datos: [] };
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            const select = document.getElementById("rol_id");
+            select.innerHTML = '<option value="">Seleccione Rol...</option>';
+            if (data.datos && data.datos.length > 0) {
+                data.datos.forEach(obj => {
+                    rolesMap[obj.id] = obj.nombre;
+                    select.innerHTML += `<option value="${obj.id}">${obj.nombre}</option>`;
+                });
+            } else {
+                select.innerHTML = '<option value="">No hay roles disponibles</option>';
+            }
+        })
+        .catch(error => {
+            console.error("Error cargando roles:", error);
+            document.getElementById("rol_id").innerHTML = `<option value="">Error: ${error.message}</option>`;
+        });
+    }
+
+    function cargarTabla() {
+        fetch("http://localhost:8000/api/rol_usuario")
+        .then(response => {
+            console.log("Response status:", response.status, "OK:", response.ok);
+            if (response.status === 204) {
+                return { datos: [] };
+            }
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Datos recibidos de rol_usuario:", data);
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = "";
+            if (data.datos && Array.isArray(data.datos)) {
+                if (data.datos.length === 0) {
+                    tabla.innerHTML = '<tr><td colspan="3" style="text-align:center;">No hay asignaciones</td></tr>';
+                } else {
+                    data.datos.forEach(objeto => {
+                        const usuarioNombre = usuariosMap[objeto.usuario_id] || `Usuario ${objeto.usuario_id}`;
+                        const rolNombre = rolesMap[objeto.rol_id] || `Rol ${objeto.rol_id}`;
+                        tabla.innerHTML += `
+                            <tr>
+                                <td>${usuarioNombre}</td>
+                                <td>${rolNombre}</td>
+                                <td>
+                                    <button type="button" class="btn-editar" onclick="editarRegistro(${objeto.usuario_id}, ${objeto.rol_id})">Editar</button>
+                                    <button type="button" class="btn-eliminar" onclick="eliminarRegistro(${objeto.usuario_id}, ${objeto.rol_id})">Eliminar</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            } else {
+                tabla.innerHTML = '<tr><td colspan="3" style="text-align:center; color:red;">Estructura de respuesta incorrecta</td></tr>';
+                console.error("Estructura incorrecta:", data);
+            }
+        })
+        .catch(error => {
+            console.error("Error al cargar los datos:", error);
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red;">Error: ${error.message}</td></tr>`;
+        });
+    }
+
+    function editarRegistro(usuario_id, rol_id) {
+        registroEnEdicion = { usuario_id: String(usuario_id), rol_id: String(rol_id) };
+        document.getElementById("usuario_registro").value = usuario_id;
+        document.getElementById("rol_registro").value = rol_id;
+        document.getElementById("usuario_id").value = usuario_id;
+        document.getElementById("rol_id").value = rol_id;
+        document.getElementById("btn-submit").textContent = "Actualizar";
+        document.getElementById("btn-cancelar").style.display = "inline-block";
+        document.getElementById("form-rol_usuario").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function cancelarEdicion() {
+        registroEnEdicion = null;
+        document.getElementById("form-rol_usuario").reset();
+        document.getElementById("usuario_registro").value = "";
+        document.getElementById("rol_registro").value = "";
+        document.getElementById("btn-submit").textContent = "Asignar Rol";
+        document.getElementById("btn-cancelar").style.display = "none";
+    }
+
+    function obtenerMensajeError(data) {
+        if (!data) return "Error desconocido";
+        if (typeof data === "string") return data;
+        if (data.mensaje) return data.mensaje;
+        if (data.detalle) {
+            if (typeof data.detalle === "string") return data.detalle;
+            if (data.detalle.mensaje) return data.detalle.mensaje;
+            if (data.detalle.detail) return data.detalle.detail;
+            return JSON.stringify(data.detalle);
+        }
+        if (data.detail) {
+            if (typeof data.detail === "string") return data.detail;
+            if (data.detail.mensaje) return data.detail.mensaje;
+            if (data.detail.detail) return data.detail.detail;
+            return JSON.stringify(data.detail);
+        }
+        return JSON.stringify(data);
+    }
+
+    function eliminarRegistro(usuario_id, rol_id) {
+        if (!confirm("¿Estás seguro de que deseas eliminar esta asignación?")) {
+            return;
+        }
+        fetch(`http://localhost:8000/api/rol_usuario/usuario_id/${usuario_id}/rol_id/${rol_id}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            return response.json().then(data => ({
+                status: response.status,
+                ok: response.ok,
+                data: data
+            }));
+        })
+        .then(result => {
+            console.log("Respuesta del servidor (DELETE):", result);
+            if (result.ok) {
+                alert("Asignación eliminada exitosamente.");
+                cargarTabla();
+            } else {
+                const errorMsg = obtenerMensajeError(result.data);
+                console.error("Error en detalle:", errorMsg);
+                alert("Error: " + errorMsg);
+            }
+        })
+        .catch(error => {
+            console.error("Error al eliminar la asignación:", error);
+            alert("Error al eliminar la asignación: " + error.message);
+        });
+    }
+
+    window.onload = function() {
+        cargarUsuarios();
+        cargarRoles();
+        cargarTabla();
+        document.getElementById("btn-cancelar").addEventListener("click", cancelarEdicion);
+    }
+
+    document.getElementById("form-rol_usuario").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const jsonData = {};
+        for (let [key, value] of formData.entries()) {
+            jsonData[key] = value;
+        }
+        
+        const usuarioRegistro = jsonData.usuario_registro;
+        const rolRegistro = jsonData.rol_registro;
+        delete jsonData.usuario_registro;
+        delete jsonData.rol_registro;
+        
+        console.log("Enviando datos:", jsonData, "En edición:", registroEnEdicion);
+
+        if (registroEnEdicion) {
+            const { usuario_id: usuarioAntiguo, rol_id: rolAntiguo } = registroEnEdicion;
+
+            if (usuarioAntiguo === jsonData.usuario_id && rolAntiguo === jsonData.rol_id) {
+                alert("No hay cambios en la asignación.");
+                return;
+            }
+
+            fetch("http://localhost:8000/api/rol_usuario", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(createResult => {
+                if (createResult.estado !== 200) {
+                    const errorMsg = obtenerMensajeError(createResult);
+                    throw new Error(`No se pudo crear la nueva asignación: ${errorMsg}`);
+                }
+                return fetch(`http://localhost:8000/api/rol_usuario/usuario_id/${usuarioAntiguo}/rol_id/${rolAntiguo}`, {
+                    method: "DELETE"
+                });
+            })
+            .then(response => response.json())
+            .then(deleteResult => {
+                if (deleteResult.estado !== 200) {
+                    const errorMsg = obtenerMensajeError(deleteResult);
+                    throw new Error(`No se pudo eliminar la asignación anterior: ${errorMsg}`);
+                }
+                alert("Asignación actualizada exitosamente.");
+                cancelarEdicion();
+                cargarTabla();
+            })
+            .catch(error => {
+                console.error("Error al actualizar la asignación:", error);
+                alert("Error al actualizar la asignación: " + error.message);
+            });
+        } else {
+            fetch("http://localhost:8000/api/rol_usuario", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.estado === 200) {
+                    alert("Asignación creada exitosamente.");
+                    cancelarEdicion();
+                    cargarTabla();
+                } else {
+                    const errorMsg = obtenerMensajeError(result);
+                    throw new Error(errorMsg);
+                }
+            })
+            .catch(error => {
+                console.error("Error al enviar el formulario:", error);
+                alert("Error al enviar el formulario: " + error.message);
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

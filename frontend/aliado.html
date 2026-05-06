@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>aliados</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Aliados</h1>
+        <form id="form-aliado">
+            <input type="hidden" id="id_registro" name="id_registro">
+            <input type="text" name="nit" id="nit" placeholder="NIT" required>
+            <input type="text" name="razon_social" id="razon_social" placeholder="Razon Social" required>
+            <input type="text" name="nombre_contacto" id="nombre_contacto" placeholder="Nombre Contacto" required>
+            <input type="text" name="correo" id="correo" placeholder="Correo"required>
+            <input type="text" name="telefono" id="telefono" placeholder="Telefono"required>
+            <input type="text" name="ciudad" id="ciudad" placeholder="Ciudad" required>            
+            <button type="submit" id="btn-submit">Guardar</button>
+            <button type="button" id="btn-cancelar" style="display:none;">Cancelar</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>NIT</th><th>Razon Social</th><th>Contacto</th><th>Correo</th><th>Telefono</th><th>Ciudad</th><th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla"></tbody>
+    </div>
+
+<script>
+    let registroEnEdicion = null;
+
+    function cargarTabla() {
+        fetch("http://localhost:8000/api/aliado")
+        .then(response => {
+            console.log("Response status:", response.status, "OK:", response.ok);
+            if (response.status === 204) {
+                return { datos: [] };
+            }
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Datos recibidos de aliado:", data);
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = "";
+            if (data.datos && Array.isArray(data.datos)) {
+                if (data.datos.length === 0) {
+                    tabla.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay registros</td></tr>';
+                } else {
+                    data.datos.forEach(objeto => {
+                        tabla.innerHTML += `
+                            <tr>
+                                <td>${objeto.nit}</td>
+                                <td>${objeto.razon_social}</td>
+                                <td>${objeto.nombre_contacto}</td>
+                                <td>${objeto.correo}</td>
+                                <td>${objeto.telefono}</td>
+                                <td>${objeto.ciudad}</td>
+                                <td>
+                                    <button type="button" class="btn-editar" onclick="editarRegistro('${objeto.nit}', '${objeto.razon_social}', '${objeto.nombre_contacto}', '${objeto.correo}', '${objeto.telefono}', '${objeto.ciudad}')">Editar</button>
+                                    <button type="button" class="btn-eliminar" onclick="eliminarRegistro('${objeto.nit}')">Eliminar</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            } else {
+                tabla.innerHTML = '<tr><td colspan="7" style="text-align:center; color:red;">Estructura de respuesta incorrecta</td></tr>';
+                console.error("Estructura incorrecta:", data);
+            }
+        })
+        .catch(error => {
+            console.error("Error al cargar los datos:", error);
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = `<tr><td colspan="7" style="text-align:center; color:red;">Error: ${error.message}</td></tr>`;
+        });
+    }
+
+    function editarRegistro(nit, razon_social, nombre_contacto, correo, telefono, ciudad) {
+        registroEnEdicion = nit;
+        document.getElementById("id_registro").value = nit;
+        document.getElementById("nit").value = nit;
+        document.getElementById("nit").disabled = true;
+        document.getElementById("razon_social").value = razon_social;
+        document.getElementById("nombre_contacto").value = nombre_contacto;
+        document.getElementById("correo").value = correo;
+        document.getElementById("telefono").value = telefono;
+        document.getElementById("ciudad").value = ciudad;
+        document.getElementById("btn-submit").textContent = "Actualizar";
+        document.getElementById("btn-cancelar").style.display = "inline-block";
+        document.getElementById("form-aliado").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function cancelarEdicion() {
+        registroEnEdicion = null;
+        document.getElementById("form-aliado").reset();
+        document.getElementById("id_registro").value = "";
+        document.getElementById("nit").disabled = false;
+        document.getElementById("btn-submit").textContent = "Guardar";
+        document.getElementById("btn-cancelar").style.display = "none";
+    }
+
+    function eliminarRegistro(nit) {
+        if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
+            return;
+        }
+        fetch(`http://localhost:8000/api/aliado/nit/${nit}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            return response.json().then(data => ({
+                status: response.status,
+                ok: response.ok,
+                data: data
+            }));
+        })
+        .then(result => {
+            console.log("Respuesta del servidor (DELETE):", result);
+            if (result.ok) {
+                alert("Registro eliminado exitosamente.");
+                cargarTabla();
+            } else {
+                const errorMsg = result.data.detalle || result.data.mensaje || "Error desconocido";
+                console.error("Error en detalle:", errorMsg);
+                alert("Error: " + errorMsg);
+            }
+        })
+        .catch(error => {
+            console.error("Error al eliminar el registro:", error);
+            alert("Error al eliminar el registro: " + error.message);
+        });
+    }
+
+    window.onload = function() {
+        cargarTabla();
+        document.getElementById("btn-cancelar").addEventListener("click", cancelarEdicion);
+    }
+
+    document.getElementById("form-aliado").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const jsonData = {};
+        for (let [key, value] of formData.entries()) {
+            jsonData[key] = value;
+        }
+        
+        const nitRegistro = jsonData.id_registro;
+        delete jsonData.id_registro;
+        
+        console.log("Enviando datos:", jsonData, "En edición:", registroEnEdicion);
+        
+        const metodo = registroEnEdicion ? "PUT" : "POST";
+        const url = registroEnEdicion 
+            ? `http://localhost:8000/api/aliado/nit/${nitRegistro}` 
+            : "http://localhost:8000/api/aliado";
+
+        fetch(url, {
+            method: metodo,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => {
+            return response.json().then(data => ({
+                status: response.status,
+                ok: response.ok,
+                data: data
+            }));
+        })
+        .then(result => {
+            console.log("Respuesta del servidor:", result);
+            if (result.ok && result.data.estado === 200) {
+                alert(registroEnEdicion ? "Registro actualizado exitosamente." : "Registro creado exitosamente.");
+                cancelarEdicion();
+                cargarTabla();
+            } else {
+                const errorMsg = result.data.detalle || result.data.mensaje || "Error desconocido";
+                console.error("Error en detalle:", errorMsg);
+                alert("Error: " + errorMsg);
+            }
+        })
+        .catch(error => {
+            console.error("Error al enviar el formulario:", error);
+            alert("Error al enviar el formulario: " + error.message);
+        });
+    });
+</script>
+
+</body>
+</html>

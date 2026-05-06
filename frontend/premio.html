@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Premios</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Premios</h1>
+    <form id="form-premio">
+        <input type="hidden" id="id_registro" name="id_registro">
+        <input type="text" name="nombre" id="nombre" placeholder="Nombre Premio" required>
+        <input type="text" name="descripcion" id="descripcion" placeholder="Descripción" required>
+        <label for="fecha">Fecha:</label>
+        <input type="date" name="fecha" id="fecha" required>
+        <input type="text" name="entidad_otorgante" id="entidad_otorgante" placeholder="Entidad Otorgante" required>
+        <input type="text" name="pais" id="pais" placeholder="País" required>
+        <select name="programa_id" id="programa_id" required>
+            <option value="">Seleccione Programa (FK)...</option>
+        </select>
+        <button type="submit" id="btn-submit">Guardar</button>
+        <button type="button" id="btn-cancelar" style="display:none;">Cancelar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Entidad</th>
+                <th>Fecha</th>
+                <th>Programa FK</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let registroEnEdicion = null;
+
+    function cargarProgramas() {
+        fetch("http://localhost:8000/api/programa")
+        .then(response => {
+            console.log("Response programa status:", response.status);
+            if (response.status === 204) return { datos: [] };
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            console.log("Datos programa:", data);
+            const select = document.getElementById("programa_id");
+            if (data.datos && data.datos.length > 0) {
+                select.innerHTML = '<option value="">Seleccione Programa (FK)...</option>';
+                data.datos.forEach(obj => {
+                    select.innerHTML += `<option value="${obj.id}">${obj.nombre || obj.id}</option>`;
+                });
+            } else {
+                select.innerHTML = '<option value="">No hay programas disponibles</option>';
+            }
+        })
+        .catch(error => {
+            console.error("Error cargando programas:", error);
+            document.getElementById("programa_id").innerHTML = `<option value="">Error: ${error.message}</option>`;
+        });
+    }
+
+    function cargarTabla() {
+        fetch("http://localhost:8000/api/premio")
+        .then(response => {
+            console.log("Response status:", response.status, "OK:", response.ok);
+            if (response.status === 204) {
+                return { datos: [] };
+            }
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Datos recibidos de premio:", data);
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = "";
+            if (data.datos && Array.isArray(data.datos)) {
+                if (data.datos.length === 0) {
+                    tabla.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay registros</td></tr>';
+                } else {
+                    data.datos.forEach(objeto => {
+                        tabla.innerHTML += `
+                            <tr>
+                                <td>${objeto.id}</td>
+                                <td>${objeto.nombre}</td>
+                                <td>${objeto.entidad_otorgante}</td>
+                                <td>${objeto.fecha}</td>
+                                <td>${objeto.programa_id}</td>
+                                <td>
+                                    <button type="button" class="btn-editar" onclick="editarRegistro(${objeto.id}, '${objeto.nombre}', '${objeto.descripcion}', '${objeto.fecha}', '${objeto.entidad_otorgante}', '${objeto.pais}', ${objeto.programa_id})">Editar</button>
+                                    <button type="button" class="btn-eliminar" onclick="eliminarRegistro(${objeto.id})">Eliminar</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            } else {
+                tabla.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Estructura de respuesta incorrecta</td></tr>';
+                console.error("Estructura incorrecta:", data);
+            }
+        })
+        .catch(error => {
+            console.error("Error al cargar los datos:", error);
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">Error: ${error.message}</td></tr>`;
+        });
+    }
+
+    function editarRegistro(id, nombre, descripcion, fecha, entidad_otorgante, pais, programa_id) {
+        registroEnEdicion = id;
+        document.getElementById("id_registro").value = id;
+        document.getElementById("nombre").value = nombre;
+        document.getElementById("descripcion").value = descripcion;
+        document.getElementById("fecha").value = fecha;
+        document.getElementById("entidad_otorgante").value = entidad_otorgante;
+        document.getElementById("pais").value = pais;
+        document.getElementById("programa_id").value = programa_id;
+        document.getElementById("btn-submit").textContent = "Actualizar";
+        document.getElementById("btn-cancelar").style.display = "inline-block";
+        document.getElementById("form-premio").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function cancelarEdicion() {
+        registroEnEdicion = null;
+        document.getElementById("form-premio").reset();
+        document.getElementById("id_registro").value = "";
+        document.getElementById("btn-submit").textContent = "Guardar";
+        document.getElementById("btn-cancelar").style.display = "none";
+    }
+
+    function eliminarRegistro(id) {
+        if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
+            return;
+        }
+        fetch(`http://localhost:8000/api/premio/id/${id}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            return response.json().then(data => ({
+                status: response.status,
+                ok: response.ok,
+                data: data
+            }));
+        })
+        .then(result => {
+            console.log("Respuesta del servidor (DELETE):", result);
+            if (result.ok) {
+                alert("Registro eliminado exitosamente.");
+                cargarTabla();
+            } else {
+                const errorMsg = result.data.detalle || result.data.mensaje || "Error desconocido";
+                console.error("Error en detalle:", errorMsg);
+                alert("Error: " + errorMsg);
+            }
+        })
+        .catch(error => {
+            console.error("Error al eliminar el registro:", error);
+            alert("Error al eliminar el registro: " + error.message);
+        });
+    }
+
+    window.onload = function() {
+        cargarProgramas();
+        cargarTabla();
+        document.getElementById("btn-cancelar").addEventListener("click", cancelarEdicion);
+    }
+
+    document.getElementById("form-premio").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const jsonData = {};
+        for (let [key, value] of formData.entries()) {
+            jsonData[key] = value;
+        }
+        
+        const idRegistro = jsonData.id_registro;
+        delete jsonData.id_registro;
+        
+        console.log("Enviando datos:", jsonData, "En edición:", registroEnEdicion);
+        
+        const metodo = registroEnEdicion ? "PUT" : "POST";
+        const url = registroEnEdicion 
+            ? `http://localhost:8000/api/premio/id/${idRegistro}` 
+            : "http://localhost:8000/api/premio";
+
+        fetch(url, {
+            method: metodo,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => {
+            return response.json().then(data => ({
+                status: response.status,
+                ok: response.ok,
+                data: data
+            }));
+        })
+        .then(result => {
+            console.log("Respuesta del servidor:", result);
+            if (result.ok && result.data.estado === 200) {
+                alert(registroEnEdicion ? "Registro actualizado exitosamente." : "Registro creado exitosamente.");
+                cancelarEdicion();
+                cargarTabla();
+            } else {
+                const errorMsg = result.data.detalle || result.data.mensaje || "Error desconocido";
+                console.error("Error en detalle:", errorMsg);
+                alert("Error: " + errorMsg);
+            }
+        })
+        .catch(error => {
+            console.error("Error al enviar el formulario:", error);
+            alert("Error al enviar el formulario: " + error.message);
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Innovación Curricular</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =============================================
+       1. RESET Y BASE
+       ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f2f5;           /* fondo de página gris claro */
+      color: #111827;
+      min-height: 100vh;
+      padding: 24px 20px 40px;
+    }
+
+    /* =============================================
+       2. CONTENEDOR PRINCIPAL DEL DASHBOARD
+       ============================================= */
+    .dashboard {
+      max-width: 960px;              /* ancho máximo centrado */
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;           /* esquinas redondeadas del card grande */
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.05);
+    }
+
+    /* =============================================
+       3. HEADER SUPERIOR
+       ============================================= */
+    .dashboard-header {
+      padding: 16px 28px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f9fafb;           /* fondo levemente gris */
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Cuadro verde del logo */
+    .logo-box {
+      width: 40px;
+      height: 40px;
+      background: #1D9E75;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .header-eyebrow {
+      font-size: 10px;
+      font-weight: 600;
+      color: #9ca3af;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-meta {
+      text-align: right;
+    }
+
+    .header-meta p {
+      font-size: 11px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    /* Avatar circular con iniciales */
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #E1F5EE;
+      border: 1px solid #d1fae5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #065f46;
+      cursor: default;
+    }
+
+    /* =============================================
+       4. CUERPO / CONTENIDO PRINCIPAL
+       ============================================= */
+    .dashboard-body {
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;                     /* espacio entre secciones */
+    }
+
+    /* =============================================
+       5. ENCABEZADO DE CADA SECCIÓN
+       ============================================= */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    /* Barra de color lateral (3px) */
+    .section-bar {
+      width: 3px;
+      height: 20px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    /* Badge con número de módulos */
+    .section-badge {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 99px;           /* forma de píldora */
+    }
+
+    /* Colores por sección — barra y badge */
+    .sec-catalogos  .section-bar  { background: #0f766e; }
+    .sec-catalogos  .section-badge { background: #d1fae5; color: red; }
+
+    .sec-green  .section-bar  { background: #1D9E75; }
+    .sec-green  .section-badge { background: #E1F5EE; color: #065f46; }
+
+    .sec-blue   .section-bar  { background: #185FA5; }
+    .sec-blue   .section-badge { background: #E6F1FB; color: #0c447c; }
+
+    .sec-amber  .section-bar  { background: #BA7517; }
+    .sec-amber  .section-badge { background: #FAEEDA; color: #633806; }
+
+    .sec-purple .section-bar  { background: #534AB7; }
+    .sec-purple .section-badge { background: #EEEDFE; color: #26215c; }
+
+    /* =============================================
+       6. GRID DE TARJETAS
+       ============================================= */
+    .section-grid {
+      display: grid;
+      /* auto-fit: crea columnas que se reorganizan solas */
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 8px;
+    }
+
+    /* =============================================
+       7. TARJETA DE MÓDULO
+       ============================================= */
+    .module-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 13px 14px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      width: 100%;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .module-card:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+      transform: translateY(-1px);   /* sube 1px al hacer hover */
+    }
+
+    .module-card:active {
+      transform: translateY(0px);    /* vuelve al hacer click */
+    }
+
+    /* Cuadro de ícono */
+    .module-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .module-name {
+      font-size: 12px;
+      font-weight: 500;
+      color: #111827;
+      line-height: 1.35;
+    }
+
+    /* Colores de ícono por sección */
+    .sec-green  .module-icon { background: #E1F5EE; }
+    .sec-blue   .module-icon { background: #E6F1FB; }
+    .sec-amber  .module-icon { background: #FAEEDA; }
+    .sec-purple .module-icon { background: #EEEDFE; }
+
+    /* =============================================
+       8. FOOTER DEL DASHBOARD
+       ============================================= */
+    .dashboard-footer {
+      padding: 11px 28px;
+      border-top: 1px solid #e5e7eb;
+      background: #f9fafb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-hint {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .footer-tags {
+      display: flex;
+      gap: 6px;
+    }
+
+    .footer-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 4px;
+    }
+
+    /* =============================================
+       9. RESPONSIVE — pantallas pequeñas
+       ============================================= */
+    @media (max-width: 600px) {
+      body { padding: 12px 10px 32px; }
+      .dashboard-body { padding: 20px 16px; }
+      .dashboard-header { padding: 14px 16px; }
+      .dashboard-footer { padding: 10px 16px; }
+      .header-meta { display: none; }   /* ocultamos meta en móvil */
+      .section-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="dashboard">
+
+    <!-- =============================================
+         HEADER
+         ============================================= -->
+    <header class="dashboard-header">
+      <div class="header-left">
+
+        <!-- Logo / ícono del sistema -->
+        <div class="logo-box">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="2" y="2" width="7" height="7" rx="1.5" fill="white"/>
+            <rect x="11" y="2" width="7" height="7" rx="1.5" fill="white" opacity=".55"/>
+            <rect x="2" y="11" width="7" height="7" rx="1.5" fill="white" opacity=".55"/>
+            <rect x="11" y="11" width="7" height="7" rx="1.5" fill="white" opacity=".3"/>
+          </svg>
+        </div>
+
+        <div>
+          <p class="header-eyebrow">Sistema de Gestión</p>
+          <p class="header-title">Innovación Curricular</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="header-meta">
+          <p>4 secciones · 25 módulos</p>
+          <p>Bienvenido al sistema</p>
+        </div>
+        <!-- Avatar: cambia "AD" por las iniciales del usuario -->
+        <div class="avatar">AD</div>
+      </div>
+    </header>
+
+
+    <!-- =============================================
+         CUERPO
+         ============================================= -->
+    <main class="dashboard-body">
+
+
+      <!-- ===========================================
+           SECCIÓN 1 · Catálogos Independientes
+           =========================================== -->
+      <section class="sec-catalogos">
+        <div class="section-header">
+          <div class="section-bar"></div>
+          <span class="section-title">Entrega 1 — Catálogos Independientes</span>
+          <span class="section-badge">7</span>
+        </div>
+
+        <div class="section-grid">
+
+          <button class="module-card" onclick="location.href='universidad.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1.5L1.5 4.2V5h11V4.2L7 1.5z" fill="#1D9E75"/>
+                <rect x="2"  y="6" width="2" height="4.5" rx=".4" fill="#1D9E75"/>
+                <rect x="6"  y="6" width="2" height="4.5" rx=".4" fill="#1D9E75"/>
+                <rect x="10" y="6" width="2" height="4.5" rx=".4" fill="#1D9E75"/>
+                <rect x="1" y="10.8" width="12" height="1.5" rx=".4" fill="#1D9E75"/>
+              </svg>
+            </div>
+            <p class="module-name">Universidades</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='area.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <rect x="1"   y="1"   width="5.5" height="5.5" rx=".8" fill="#1D9E75"/>
+                <rect x="7.5" y="1"   width="5.5" height="5.5" rx=".8" fill="#1D9E75" opacity=".6"/>
+                <rect x="1"   y="7.5" width="5.5" height="5.5" rx=".8" fill="#1D9E75" opacity=".6"/>
+                <rect x="7.5" y="7.5" width="5.5" height="5.5" rx=".8" fill="#1D9E75" opacity=".35"/>
+              </svg>
+            </div>
+            <p class="module-name">Áreas de Conocimiento</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='aspecto.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1L2 3.2v3c0 3.1 2.2 5.7 5 6.8 2.8-1.1 5-3.7 5-6.8v-3L7 1z" fill="#1D9E75"/>
+                <path d="M5 7l1.5 1.5L9.2 5.2" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Aspectos Normativos</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='practica.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="7" cy="5" r="3" fill="#1D9E75"/>
+                <circle cx="7" cy="5" r="1.3" fill="white"/>
+                <line x1="7" y1="8.2" x2="7" y2="12"   stroke="#1D9E75" stroke-width="1.3" stroke-linecap="round"/>
+                <line x1="5" y1="10.5" x2="9" y2="10.5" stroke="#1D9E75" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Prácticas / Estrategias</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='enfoque.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="7" cy="7" r="5.5" stroke="#1D9E75" stroke-width="1.1"/>
+                <circle cx="7" cy="7" r="3"   stroke="#1D9E75" stroke-width="1.1" opacity=".6"/>
+                <circle cx="7" cy="7" r="1.3" fill="#1D9E75"/>
+              </svg>
+            </div>
+            <p class="module-name">Enfoques</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='innovacion.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1.2l1.5 3 3.3.5-2.4 2.3.6 3.3L7 8.7l-3 1.6.6-3.3L2.2 4.7l3.3-.5L7 1.2z" fill="#1D9E75"/>
+              </svg>
+            </div>
+            <p class="module-name">Características Innovación</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='aliado.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="4.5" cy="4.2" r="2.3" fill="#1D9E75"/>
+                <circle cx="9.5" cy="4.2" r="2.3" fill="#1D9E75" opacity=".55"/>
+                <path d="M1 11.5c0-1.9 1.6-3.4 3.5-3.4S8 9.6 8 11.5" stroke="#1D9E75" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+                <path d="M6 11.5c0-1.9 1.6-3.4 3.5-3.4S13 9.6 13 11.5" stroke="#1D9E75" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".55"/>
+              </svg>
+            </div>
+            <p class="module-name">Aliados</p>
+          </button>
+
+        </div>
+      </section>
+
+
+      <!-- ===========================================
+           SECCIÓN 2 · Tablas con Dependencias
+           =========================================== -->
+      <section class="sec-blue">
+        <div class="section-header">
+          <div class="section-bar"></div>
+          <span class="section-title">Entrega 2 — Tablas con Dependencias</span>
+          <span class="section-badge">7</span>
+        </div>
+
+        <div class="section-grid">
+
+          <button class="module-card" onclick="location.href='facultad.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1.5L1.5 4.2V5h11V4.2L7 1.5z" fill="#185FA5"/>
+                <rect x="2"  y="6" width="2" height="4.5" rx=".4" fill="#185FA5"/>
+                <rect x="6"  y="6" width="2" height="4.5" rx=".4" fill="#185FA5"/>
+                <rect x="10" y="6" width="2" height="4.5" rx=".4" fill="#185FA5"/>
+                <rect x="1" y="10.8" width="12" height="1.5" rx=".4" fill="#185FA5"/>
+              </svg>
+            </div>
+            <p class="module-name">Facultades</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='programa_ac.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <rect x="2.5" y="1" width="9" height="12" rx="1" stroke="#185FA5" stroke-width="1.1"/>
+                <line x1="4.5" y1="4.5" x2="9.5" y2="4.5" stroke="#185FA5" stroke-width="1"   stroke-linecap="round"/>
+                <line x1="4.5" y1="7"   x2="9.5" y2="7"   stroke="#185FA5" stroke-width="1"   stroke-linecap="round"/>
+                <line x1="4.5" y1="9.5" x2="7.5" y2="9.5" stroke="#185FA5" stroke-width="1"   stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Programas Académicos</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='acreditacion.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1L2 3.2v3c0 3.1 2.2 5.7 5 6.8 2.8-1.1 5-3.7 5-6.8v-3L7 1z" fill="#185FA5"/>
+                <path d="M5 7l1.5 1.5L9.2 5.2" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Acreditaciones</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='registro_calificado.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <rect x="1.5"  y="9"   width="2" height="3.5" rx=".4" fill="#185FA5"/>
+                <rect x="4.5"  y="6.5" width="2" height="6"   rx=".4" fill="#185FA5" opacity=".7"/>
+                <rect x="7.5"  y="4"   width="2" height="8.5" rx=".4" fill="#185FA5" opacity=".85"/>
+                <rect x="10.5" y="1.5" width="2" height="11"  rx=".4" fill="#185FA5"/>
+              </svg>
+            </div>
+            <p class="module-name">Registros Calificados</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='activ_academica.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <rect x="1.5" y="2.5" width="11" height="10" rx="1" stroke="#185FA5" stroke-width="1.1"/>
+                <line x1="1.5" y1="5.5" x2="12.5" y2="5.5" stroke="#185FA5" stroke-width="1"/>
+                <line x1="4.5" y1="1"   x2="4.5"  y2="4"   stroke="#185FA5" stroke-width="1.2" stroke-linecap="round"/>
+                <line x1="9.5" y1="1"   x2="9.5"  y2="4"   stroke="#185FA5" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Actividades Académicas</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='pasantia.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <rect x="1.5" y="5" width="11" height="7.5" rx="1" stroke="#185FA5" stroke-width="1.1"/>
+                <path d="M5 5V4a2 2 0 014 0v1" stroke="#185FA5" stroke-width="1.1"/>
+                <line x1="1.5" y1="8.5" x2="12.5" y2="8.5" stroke="#185FA5" stroke-width=".9" opacity=".5"/>
+              </svg>
+            </div>
+            <p class="module-name">Pasantías</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='premio.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <path d="M7 1.2l1.4 2.8 3.1.5-2.25 2.2.53 3.1L7 8.5l-2.78 1.3.53-3.1L2.5 4.5l3.1-.5L7 1.2z" fill="#185FA5"/>
+                <line x1="7"   y1="9.3"  x2="7"   y2="12.5" stroke="#185FA5" stroke-width="1.1"/>
+                <line x1="4.5" y1="12.5" x2="9.5" y2="12.5" stroke="#185FA5" stroke-width="1.1" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Premios</p>
+          </button>
+
+        </div>
+      </section>
+
+
+      <!-- ===========================================
+           SECCIÓN 3 · Asignaciones (M:N)
+           =========================================== -->
+      <section class="sec-amber">
+        <div class="section-header">
+          <div class="section-bar"></div>
+          <span class="section-title">— Asignaciones (M:N)</span>
+          <span class="section-badge">8</span>
+        </div>
+
+        <div class="section-grid">
+
+          <!-- Ícono reutilizable: dos puntos unidos = relación M:N -->
+          <button class="module-card" onclick="location.href='programa.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="3"  cy="7" r="2" fill="#BA7517"/>
+                <circle cx="11" cy="7" r="2" fill="#BA7517" opacity=".6"/>
+                <line x1="5.2" y1="7" x2="8.8" y2="7" stroke="#BA7517" stroke-width="1.2" stroke-dasharray="1.5 1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Programa - Área</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='programa_pe.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="3"  cy="7" r="2" fill="#BA7517"/>
+                <circle cx="11" cy="7" r="2" fill="#BA7517" opacity=".6"/>
+                <line x1="5.2" y1="7" x2="8.8" y2="7" stroke="#BA7517" stroke-width="1.2" stroke-dasharray="1.5 1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Programa - Práctica</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='programa_ci.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="3"  cy="7" r="2" fill="#BA7517"/>
+                <circle cx="11" cy="7" r="2" fill="#BA7517" opacity=".6"/>
+                <line x1="5.2" y1="7" x2="8.8" y2="7" stroke="#BA7517" stroke-width="1.2" stroke-dasharray="1.5 1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Programa - Innovación</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='an_programa.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="3"  cy="7" r="2" fill="#BA7517"/>
+                <circle cx="11" cy="7" r="2" fill="#BA7517" opacity=".6"/>
+                <line x1="5.2" y1="7" x2="8.8" y2="7" stroke="#BA7517" stroke-width="1.2" stroke-dasharray="1.5 1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Programa - Normativa</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='enfoque_rc.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="3"  cy="7" r="2" fill="#BA7517"/>
+                <circle cx="11" cy="7" r="2" fill="#BA7517" opacity=".6"/>
+                <line x1="5.2" y1="7" x2="8.8" y2="7" stroke="#BA7517" stroke-width="1.2" stroke-dasharray="1.5 1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Enfoque - Reg. Calificado</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='aa_rc.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="3"  cy="7" r="2" fill="#BA7517"/>
+                <circle cx="11" cy="7" r="2" fill="#BA7517" opacity=".6"/>
+                <line x1="5.2" y1="7" x2="8.8" y2="7" stroke="#BA7517" stroke-width="1.2" stroke-dasharray="1.5 1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Activ. Académica - Reg. Calificado</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='docente_departamento.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="3"  cy="7" r="2" fill="#BA7517"/>
+                <circle cx="11" cy="7" r="2" fill="#BA7517" opacity=".6"/>
+                <line x1="5.2" y1="7" x2="8.8" y2="7" stroke="#BA7517" stroke-width="1.2" stroke-dasharray="1.5 1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Docentes por Programa</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='alianza.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="3"  cy="7" r="2" fill="#BA7517"/>
+                <circle cx="11" cy="7" r="2" fill="#BA7517" opacity=".6"/>
+                <line x1="5.2" y1="7" x2="8.8" y2="7" stroke="#BA7517" stroke-width="1.2" stroke-dasharray="1.5 1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Alianzas (Aliado-Programa)</p>
+          </button>
+
+        </div>
+      </section>
+
+
+      <!-- ===========================================
+           SECCIÓN 4 · Gestión de Usuarios
+           =========================================== -->
+      <section class="sec-purple">
+        <div class="section-header">
+          <div class="section-bar"></div>
+          <span class="section-title">Gestión de Usuarios</span>
+          <span class="section-badge">3</span>
+        </div>
+
+        <div class="section-grid">
+
+          <button class="module-card" onclick="location.href='usuario.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="7" cy="4.5" r="2.8" fill="#534AB7"/>
+                <path d="M1.5 12.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="#534AB7" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Usuarios</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='rol.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="7" cy="6" r="2.2" stroke="#534AB7" stroke-width="1.1"/>
+                <path d="M7 8.2v3M5.5 9.5H8.5" stroke="#534AB7" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M4.5 4.5C4.5 3.1 5.6 2 7 2s2.5 1.1 2.5 2.5" stroke="#534AB7" stroke-width="1.1" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+            <p class="module-name">Roles</p>
+          </button>
+
+          <button class="module-card" onclick="location.href='rol_usuario.html'">
+            <div class="module-icon">
+              <svg width="15" height="15" viewBox="0 0 14 14" fill="none">
+                <circle cx="5.5" cy="4.5" r="2.5" fill="#534AB7" opacity=".7"/>
+                <path d="M1 11.5c0-2.5 2-4.5 4.5-4.5" stroke="#534AB7" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+                <path d="M9.5 7.5L11.5 9.5L13.5 7" stroke="#534AB7" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <p class="module-name">Asignar Roles</p>
+          </button>
+
+        </div>
+      </section>
+
+
+    </main><!-- fin dashboard-body -->
+
+
+    <!-- =============================================
+         FOOTER
+         ============================================= -->
+    <footer class="dashboard-footer">
+      <span class="footer-hint">Selecciona un módulo para ingresar</span>
+      <div class="footer-tags">
+        <span class="footer-tag" style="background:#E1F5EE; color:#065f46;">E1</span>
+        <span class="footer-tag" style="background:#E6F1FB; color:#0c447c;">E2</span>
+        <span class="footer-tag" style="background:#FAEEDA; color:#633806;">M:N</span>
+        <span class="footer-tag" style="background:#EEEDFE; color:#26215c;">USR</span>
+      </div>
+    </footer>
+
+  </div><!-- fin .dashboard -->
+
+</body>
+</html>

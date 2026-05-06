@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Acreditaciones</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Acreditaciones</h1>
+    <form id="form-acreditacion">
+        <input type="hidden" id="id_registro" name="id_registro">
+        <input type="text" name="resolucion" id="resolucion" placeholder="Número Resolución (PK)" required>
+        <input type="text" name="tipo" id="tipo" placeholder="Tipo de Acreditación" required>
+        <input type="text" name="calificacion" id="calificacion" placeholder="Calificación" required>
+        <label for="fecha_inicio">Fecha Inicio:</label>
+        <input type="date" name="fecha_inicio" id="fecha_inicio" required>
+        <label for="fecha_fin">Fecha Fin:</label>
+        <input type="date" name="fecha_fin" id="fecha_fin" required>
+        <select name="programa_id" id="programa_id" required>
+            <option value="">Seleccione Programa (FK)...</option>
+            <option value="1">Programa Ejemplo</option>
+        </select>
+        <button type="submit" id="btn-submit">Guardar</button>
+        <button type="button" id="btn-cancelar" style="display:none;">Cancelar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Resolución (PK)</th>
+                <th>Tipo</th>
+                <th>Calificación</th>
+                <th>Fechas</th>
+                <th>Programa FK</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla">
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let registroEnEdicion = null;
+
+    function cargarProgramas() {
+        fetch("http://localhost:8000/api/programa")
+        .then(response => {
+            console.log("Response programa status:", response.status);
+            if (response.status === 204) return { datos: [] };
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            console.log("Datos programa:", data);
+            const select = document.getElementById("programa_id");
+            if (data.datos && data.datos.length > 0) {
+                select.innerHTML = '<option value="">Seleccione Programa (FK)...</option>';
+                data.datos.forEach(obj => {
+                    select.innerHTML += `<option value="${obj.id}">${obj.nombre || obj.id}</option>`;
+                });
+            } else {
+                select.innerHTML = '<option value="">No hay programas disponibles</option>';
+            }
+        })
+        .catch(error => {
+            console.error("Error cargando programas:", error);
+            document.getElementById("programa_id").innerHTML = `<option value="">Error: ${error.message}</option>`;
+        });
+    }
+
+    function cargarTabla() {
+        fetch("http://localhost:8000/api/acreditacion")
+        .then(response => {
+            console.log("Response status:", response.status, "OK:", response.ok);
+            if (response.status === 204) {
+                return { datos: [] };
+            }
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Datos recibidos de acreditacion:", data);
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = "";
+            if (data.datos && Array.isArray(data.datos)) {
+                if (data.datos.length === 0) {
+                    tabla.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay registros</td></tr>';
+                } else {
+                    data.datos.forEach(objeto => {
+                        tabla.innerHTML += `
+                            <tr>
+                                <td>${objeto.resolucion}</td>
+                                <td>${objeto.tipo}</td>
+                                <td>${objeto.calificacion}</td>
+                                <td>${objeto.fecha_inicio} - ${objeto.fecha_fin}</td>
+                                <td>${objeto.programa_id}</td>
+                                <td>
+                                    <button type="button" class="btn-editar" onclick="editarRegistro('${objeto.resolucion}', '${objeto.tipo}', '${objeto.calificacion}', '${objeto.fecha_inicio}', '${objeto.fecha_fin}', ${objeto.programa_id})">Editar</button>
+                                    <button type="button" class="btn-eliminar" onclick="eliminarRegistro('${objeto.resolucion}')">Eliminar</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            } else {
+                tabla.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Estructura de respuesta incorrecta</td></tr>';
+                console.error("Estructura incorrecta:", data);
+            }
+        })
+        .catch(error => {
+            console.error("Error al cargar los datos:", error);
+            const tabla = document.getElementById("tabla");
+            tabla.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red;">Error: ${error.message}</td></tr>`;
+        });
+    }
+
+    function editarRegistro(resolucion, tipo, calificacion, fecha_inicio, fecha_fin, programa_id) {
+        registroEnEdicion = resolucion;
+        document.getElementById("id_registro").value = resolucion;
+        document.getElementById("resolucion").value = resolucion;
+        document.getElementById("resolucion").disabled = true;
+        document.getElementById("tipo").value = tipo;
+        document.getElementById("calificacion").value = calificacion;
+        document.getElementById("fecha_inicio").value = fecha_inicio;
+        document.getElementById("fecha_fin").value = fecha_fin;
+        document.getElementById("programa_id").value = programa_id;
+        document.getElementById("btn-submit").textContent = "Actualizar";
+        document.getElementById("btn-cancelar").style.display = "inline-block";
+        document.getElementById("form-acreditacion").scrollIntoView({ behavior: "smooth" });
+    }
+
+    function cancelarEdicion() {
+        registroEnEdicion = null;
+        document.getElementById("form-acreditacion").reset();
+        document.getElementById("id_registro").value = "";
+        document.getElementById("resolucion").disabled = false;
+        document.getElementById("btn-submit").textContent = "Guardar";
+        document.getElementById("btn-cancelar").style.display = "none";
+    }
+
+    function eliminarRegistro(resolucion) {
+        if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
+            return;
+        }
+        fetch(`http://localhost:8000/api/acreditacion/resolucion/${resolucion}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            return response.json().then(data => ({
+                status: response.status,
+                ok: response.ok,
+                data: data
+            }));
+        })
+        .then(result => {
+            console.log("Respuesta del servidor (DELETE):", result);
+            if (result.ok) {
+                alert("Registro eliminado exitosamente.");
+                cargarTabla();
+            } else {
+                const errorMsg = result.data.detalle || result.data.mensaje || "Error desconocido";
+                console.error("Error en detalle:", errorMsg);
+                alert("Error: " + errorMsg);
+            }
+        })
+        .catch(error => {
+            console.error("Error al eliminar el registro:", error);
+            alert("Error al eliminar el registro: " + error.message);
+        });
+    }
+
+    window.onload = function() {
+        cargarProgramas();
+        cargarTabla();
+        document.getElementById("btn-cancelar").addEventListener("click", cancelarEdicion);
+    }
+
+    document.getElementById("form-acreditacion").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const jsonData = {};
+        for (let [key, value] of formData.entries()) {
+            jsonData[key] = value;
+        }
+        
+        const resolucionRegistro = jsonData.id_registro;
+        delete jsonData.id_registro;
+        
+        console.log("Enviando datos:", jsonData, "En edición:", registroEnEdicion);
+        
+        const metodo = registroEnEdicion ? "PUT" : "POST";
+        const url = registroEnEdicion 
+            ? `http://localhost:8000/api/acreditacion/resolucion/${resolucionRegistro}` 
+            : "http://localhost:8000/api/acreditacion";
+
+        fetch(url, {
+            method: metodo,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(jsonData)
+        })
+        .then(response => {
+            return response.json().then(data => ({
+                status: response.status,
+                ok: response.ok,
+                data: data
+            }));
+        })
+        .then(result => {
+            console.log("Respuesta del servidor:", result);
+            if (result.ok && result.data.estado === 200) {
+                alert(registroEnEdicion ? "Registro actualizado exitosamente." : "Registro creado exitosamente.");
+                cancelarEdicion();
+                cargarTabla();
+            } else {
+                const errorMsg = result.data.detalle || result.data.mensaje || "Error desconocido";
+                console.error("Error en detalle:", errorMsg);
+                alert("Error: " + errorMsg);
+            }
+        })
+        .catch(error => {
+            console.error("Error al enviar el formulario:", error);
+            alert("Error al enviar el formulario: " + error.message);
+        });
+    });
+</script>
+
+</body>
+</html>
