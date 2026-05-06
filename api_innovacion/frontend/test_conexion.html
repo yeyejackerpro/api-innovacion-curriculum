@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Conectividad - API Innovación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .test-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .test-section h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .status-badge.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-badge.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-badge.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-icon {
+            font-size: 18px;
+        }
+        
+        .response-container {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .response-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .response-item:last-child {
+            border-bottom: none;
+        }
+        
+        .response-key {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .response-value {
+            color: #666;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .summary {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .summary h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        
+        .summary-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            color: #333;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .check-icon::before {
+            content: "✓";
+        }
+        
+        .cross-icon::before {
+            content: "✗";
+        }
+        
+        .endpoint-url {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Prueba de Conectividad</h1>
+        <p class="subtitle">Verificando Backend API - Frontend Connection</p>
+        
+        <!-- Test 1: Endpoint Raíz -->
+        <div class="test-section">
+            <h2><span>🔌</span> Test 1: Conexión Básica</h2>
+            <p>Verificando si el backend está activo en localhost:8000</p>
+            <div class="endpoint-url">GET http://localhost:8000/</div>
+            <div id="test1-status" class="status-badge loading">
+                <span class="spinner"></span> Verificando...
+            </div>
+            <div id="test1-response" class="response-container" style="display:none;"></div>
+        </div>
+        
+        <!-- Test 2: Documentación Swagger -->
+        <div class="test-section">
+            <h2><span>📚</span> Test 2: Documentación API</h2>
+            <p>Verificando acceso a Swagger UI</p>
+            <div class="endpoint-url">GET http://localhost:8000/swagger</div>
+            <div id="test2-status" class="status-badge loading">
+                <span class="spinner"></span> Verificando...
+            </div>
+            <button onclick="abrirSwagger()">Abrir Swagger UI</button>
+        </div>
+        
+        <!-- Test 3: CORS Headers -->
+        <div class="test-section">
+            <h2><span>🔐</span> Test 3: Verificación CORS</h2>
+            <p>Verificando headers CORS para conectividad frontend</p>
+            <div id="test3-status" class="status-badge loading">
+                <span class="spinner"></span> Verificando...
+            </div>
+            <div id="test3-response" class="response-container" style="display:none;"></div>
+        </div>
+        
+        <!-- Test 4: Endpoints CRUD -->
+        <div class="test-section">
+            <h2><span>📊</span> Test 4: Endpoints CRUD</h2>
+            <p>Verificando disponibilidad de endpoints de datos</p>
+            <button onclick="testearEndpoints()">Probar Endpoints</button>
+            <div id="test4-response" class="response-container" style="display:none;"></div>
+        </div>
+        
+        <!-- Resumen Final -->
+        <div class="summary">
+            <h3>📋 Resultado Final</h3>
+            <div id="summary-content">
+                <p style="color: #666; font-size: 14px;">Ejecuta las pruebas para ver los resultados...</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let resultados = {};
+        
+        // Test 1: Conexión Básica
+        async function test1BasicoConexion() {
+            try {
+                const response = await fetch(`${API_BASE}/`);
+                const data = await response.json();
+                
+                resultados.test1 = {
+                    exito: response.ok,
+                    status: response.status,
+                    data: data
+                };
+                
+                const badge = document.getElementById('test1-status');
+                const respContainer = document.getElementById('test1-response');
+                
+                if (response.ok) {
+                    badge.className = 'status-badge success';
+                    badge.innerHTML = '<span class="status-icon check-icon"></span> ✅ Conexión Exitosa';
+                    
+                    respContainer.style.display = 'block';
+                    respContainer.innerHTML = `
+                        <div class="response-item">
+                            <span class="response-key">Estado:</span>
+                            <span class="response-value">${response.status} ${response.statusText}</span>
+                        </div>
+                        <div class="response-item">
+                            <span class="response-key">Mensaje:</span>
+                            <span class="response-value">${data.message}</span>
+                        </div>
+                        <div class="response-item">
+                            <span class="response-key">Versión:</span>
+                            <span class="response-value">${data.version}</span>
+                        </div>
+                        <div class="response-item">
+                            <span class="response-key">Entorno:</span>
+                            <span class="response-value">${data.entorno}</span>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`Error: ${response.status}`);
+                }
+            } catch (error) {
+                const badge = document.getElementById('test1-status');
+                badge.className = 'status-badge error';
+                badge.innerHTML = `<span class="status-icon cross-icon"></span> ❌ Error: ${error.message}`;
+                resultados.test1 = { exito: false, error: error.message };
+            }
+        }
+        
+        // Test 2: Swagger
+        function test2Swagger() {
+            try {
+                const response = fetch(`${API_BASE}/swagger`);
+                const badge = document.getElementById('test2-status');
+                badge.className = 'status-badge success';
+                badge.innerHTML = '<span class="status-icon check-icon"></span> ✅ Swagger Disponible';
+                resultados.test2 = { exito: true };
+            } catch (error) {
+                const badge = document.getElementById('test2-status');
+                badge.className = 'status-badge error';
+                badge.innerHTML = `<span class="status-icon cross-icon"></span> ❌ Error: ${error.message}`;
+                resultados.test2 = { exito: false, error: error.message };
+            }
+        }
+        
+        // Test 3: CORS Headers
+        async function test3CORS() {
+            try {
+                const response = await fetch(`${API_BASE}/`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin
+                    }
+                });
+                
+                const corsHeader = response.headers.get('access-control-allow-origin');
+                const corsMethods = response.headers.get('access-control-allow-methods');
+                const corsHeaders = response.headers.get('access-control-allow-headers');
+                
+                const badge = document.getElementById('test3-status');
+                const respContainer = document.getElementById('test3-response');
+                
+                if (corsHeader) {
+                    badge.className = 'status-badge success';
+                    badge.innerHTML = '<span class="status-icon check-icon"></span> ✅ CORS Habilitado';
+                    
+                    respContainer.style.display = 'block';
+                    respContainer.innerHTML = `
+                        <div class="response-item">
+                            <span class="response-key">Allow-Origin:</span>
+                            <span class="response-value">${corsHeader}</span>
+                        </div>
+                        <div class="response-item">
+                            <span class="response-key">Allow-Methods:</span>
+                            <span class="response-value">${corsMethods || 'N/A'}</span>
+                        </div>
+                        <div class="response-item">
+                            <span class="response-key">Allow-Headers:</span>
+                            <span class="response-value">${corsHeaders || 'N/A'}</span>
+                        </div>
+                    `;
+                    resultados.test3 = { exito: true, corsHeader };
+                } else {
+                    throw new Error('CORS no está habilitado');
+                }
+            } catch (error) {
+                const badge = document.getElementById('test3-status');
+                badge.className = 'status-badge error';
+                badge.innerHTML = `<span class="status-icon cross-icon"></span> ❌ Error: ${error.message}`;
+                resultados.test3 = { exito: false, error: error.message };
+            }
+        }
+        
+        // Test 4: Endpoints CRUD
+        async function testearEndpoints() {
+            const respContainer = document.getElementById('test4-response');
+            respContainer.style.display = 'block';
+            respContainer.innerHTML = '<div class="response-item"><span class="spinner"></span> Probando endpoints...</div>';
+            
+            const endpoints = [
+                { metodo: 'GET', url: '/api/usuarios', desc: 'Listar usuarios' },
+                { metodo: 'GET', url: '/api/programas', desc: 'Listar programas' },
+                { metodo: 'GET', url: '/api/facultades', desc: 'Listar facultades' }
+            ];
+            
+            let html = '';
+            
+            for (const ep of endpoints) {
+                try {
+                    const response = await fetch(`${API_BASE}${ep.url}`);
+                    const status = response.status;
+                    const statusText = response.statusText;
+                    
+                    html += `
+                        <div class="response-item">
+                            <span class="response-key">${ep.metodo} ${ep.url}</span><br>
+                            <span class="response-value">→ ${status} ${statusText} (${ep.desc})</span>
+                        </div>
+                    `;
+                } catch (error) {
+                    html += `
+                        <div class="response-item">
+                            <span class="response-key">${ep.metodo} ${ep.url}</span><br>
+                            <span class="response-value">→ ❌ Error: ${error.message}</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            respContainer.innerHTML = html;
+            resultados.test4 = { exito: true };
+        }
+        
+        // Abrir Swagger
+        function abrirSwagger() {
+            const url = `${API_BASE}/swagger`;
+            window.open(url, '_blank');
+        }
+        
+        // Actualizar resumen
+        function actualizarResumen() {
+            const totalTests = Object.keys(resultados).length;
+            const exitosos = Object.values(resultados).filter(r => r.exito).length;
+            
+            let html = `
+                <div class="summary-item">
+                    <strong>Tests Ejecutados:</strong> ${totalTests} / 4
+                </div>
+                <div class="summary-item">
+                    <strong>Tests Exitosos:</strong> ${exitosos} / ${totalTests}
+                </div>
+            `;
+            
+            if (totalTests > 0) {
+                html += '<hr style="margin: 10px 0; border: none; border-top: 1px solid rgba(0,0,0,0.1);">';
+                
+                for (const [test, result] of Object.entries(resultados)) {
+                    const icon = result.exito ? '✅' : '❌';
+                    const nombre = test === 'test1' ? 'Conexión Básica' :
+                                 test === 'test2' ? 'Swagger' :
+                                 test === 'test3' ? 'CORS' : 'Endpoints';
+                    html += `<div class="summary-item">${icon} ${nombre}</div>`;
+                }
+            }
+            
+            document.getElementById('summary-content').innerHTML = html;
+        }
+        
+        // Ejecutar todas las pruebas al cargar
+        window.addEventListener('load', async () => {
+            await test1BasicoConexion();
+            test2Swagger();
+            await test3CORS();
+            actualizarResumen();
+        });
+        
+        // Actualizar resumen cada vez que hay cambios
+        setInterval(actualizarResumen, 500);
+    </script>
+</body>
+</html>
