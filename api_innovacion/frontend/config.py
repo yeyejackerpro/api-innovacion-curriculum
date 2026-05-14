@@ -1,0 +1,1 @@
+API_BASE_URL = "https://api-innovacion-curriculum.onrender.com"
