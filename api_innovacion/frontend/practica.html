@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Práctica / Estrategia</title>
-<link rel="stylesheet" href="styles.css">
-</head>
+<link rel="stylesheet" href="styles.css"><script src="config.js"></script></head>
 <body>
 
 <div class="container">
@@ -34,7 +33,7 @@
     let registroEnEdicion = null;
 
     function cargarTabla() {
-        fetch("http://localhost:8000/api/practica_estrategia")
+        fetch(`${API_BASE}/api/practica_estrategia`)
         .then(response => {
             console.log("Response status:", response.status, "OK:", response.ok);
             if (response.status === 204) {
@@ -103,7 +102,7 @@
         if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
             return;
         }
-        fetch(`http://localhost:8000/api/practica_estrategia/id/${id}`, {
+        fetch(`${API_BASE}/api/practica_estrategia/id/${id}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -150,8 +149,8 @@
         
         const metodo = registroEnEdicion ? "PUT" : "POST";
         const url = registroEnEdicion 
-            ? `http://localhost:8000/api/practica_estrategia/id/${idRegistro}` 
-            : "http://localhost:8000/api/practica_estrategia";
+            ? `${API_BASE}/api/practica_estrategia/id/${idRegistro}` 
+            : `${API_BASE}/api/practica_estrategia`;
 
         fetch(url, {
             method: metodo,

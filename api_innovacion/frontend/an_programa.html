@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <title>Asignación Programa - Aspecto Normativo</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
 </head>
 <body>
 <div class="container">
     <h1>Asignar Aspecto Normativo a Programa</h1>
-    <form action="http://localhost:8000/api/an_programa" method="POST">
+    <form action="http://localhost:8000/api/an_programa" method="POST" onsubmit="this.action = `${API_BASE}/api/an_programa`;">
         <select name="programa_id" id="programa_id" required>
             <option value="">Seleccione Programa (FK)...</option>
             <option value="1">Programa Ejemplo</option>

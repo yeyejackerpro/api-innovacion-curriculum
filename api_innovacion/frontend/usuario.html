@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Gestión de Usuarios</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="stylesheet" href="styles.css">    <script src="config.js"></script></head>
 <body>
 <div class="container">
     <h1>Gestión de Usuarios</h1>
@@ -40,7 +39,7 @@
     let registroEnEdicion = null;
 
     function cargarTabla() {
-        fetch("http://localhost:8000/api/usuario")
+        fetch(`${API_BASE}/api/usuario`)
         .then(response => {
             console.log("Response status:", response.status, "OK:", response.ok);
             if (response.status === 204) {
@@ -114,7 +113,7 @@
         if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
             return;
         }
-        fetch(`http://localhost:8000/api/usuario/id/${id}`, {
+        fetch(`${API_BASE}/api/usuario/id/${id}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -165,8 +164,8 @@
         
         const metodo = registroEnEdicion ? "PUT" : "POST";
         const url = registroEnEdicion 
-            ? `http://localhost:8000/api/usuario/id/${idRegistro}` 
-            : "http://localhost:8000/api/usuario";
+            ? `${API_BASE}/api/usuario/id/${idRegistro}` 
+            : `${API_BASE}/api/usuario`;
 
         fetch(url, {
             method: metodo,

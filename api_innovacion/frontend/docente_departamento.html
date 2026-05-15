@@ -8,7 +8,7 @@
 <body>
 <div class="container">
     <h1>Vinculación Docente a Programa</h1>
-    <form action="http://localhost:8000/api/docente_departamento" method="POST">
+    <form action="http://localhost:8000/api/docente_departamento" method="POST" onsubmit="this.action = `${API_BASE}/api/docente_departamento`;">
         <select name="docente_id" id="docente_id" required>
             <option value="">Seleccione Docente (FK)...</option>
             <option value="1">Docente Ejemplo</option>

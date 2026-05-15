@@ -34,7 +34,7 @@
     let registroEnEdicion = null;
 
     function cargarTabla() {
-        fetch("http://localhost:8000/api/aliado")
+        fetch(`${API_BASE}/api/aliado`)
         .then(response => {
             console.log("Response status:", response.status, "OK:", response.ok);
             if (response.status === 204) {
@@ -110,7 +110,7 @@
         if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
             return;
         }
-        fetch(`http://localhost:8000/api/aliado/nit/${nit}`, {
+        fetch(`${API_BASE}/api/aliado/nit/${nit}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -157,8 +157,8 @@
         
         const metodo = registroEnEdicion ? "PUT" : "POST";
         const url = registroEnEdicion 
-            ? `http://localhost:8000/api/aliado/nit/${nitRegistro}` 
-            : "http://localhost:8000/api/aliado";
+            ? `${API_BASE}/api/aliado/nit/${nitRegistro}` 
+            : `${API_BASE}/api/aliado`;
 
         fetch(url, {
             method: metodo,

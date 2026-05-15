@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Asignación Programa - Innovación Curricular</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="stylesheet" href="styles.css">    <script src="config.js"></script></head>
 <body>
 <div class="container">
     <h1>Asignar Innovación Curricular a Programa</h1>
-    <form action="http://localhost:8000/api/programa_ci" method="POST">
+    <form action="http://localhost:8000/api/programa_ci" method="POST" onsubmit="this.action = `${API_BASE}/api/programa_ci`;">
         <select name="programa_id" id="programa_id" required>
             <option value="">Seleccione Programa (FK)...</option>
             <option value="1">Programa Ejemplo</option>

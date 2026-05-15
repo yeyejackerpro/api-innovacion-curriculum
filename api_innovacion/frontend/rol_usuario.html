@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Asignación de Roles</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
 </head>
 <body>
 <div class="container">
@@ -39,7 +40,7 @@
     let rolesMap = {};
 
     function cargarUsuarios() {
-        fetch("http://localhost:8000/api/usuario")
+        fetch(`${API_BASE}/api/usuario`)
         .then(response => {
             if (response.status === 204) return { datos: [] };
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -64,7 +65,7 @@
     }
 
     function cargarRoles() {
-        fetch("http://localhost:8000/api/rol")
+        fetch(`${API_BASE}/api/rol`)
         .then(response => {
             if (response.status === 204) return { datos: [] };
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -89,7 +90,7 @@
     }
 
     function cargarTabla() {
-        fetch("http://localhost:8000/api/rol_usuario")
+        fetch(`${API_BASE}/api/rol_usuario`)
         .then(response => {
             console.log("Response status:", response.status, "OK:", response.ok);
             if (response.status === 204) {
@@ -178,7 +179,7 @@
         if (!confirm("¿Estás seguro de que deseas eliminar esta asignación?")) {
             return;
         }
-        fetch(`http://localhost:8000/api/rol_usuario/usuario_id/${usuario_id}/rol_id/${rol_id}`, {
+        fetch(`${API_BASE}/api/rol_usuario/usuario_id/${usuario_id}/rol_id/${rol_id}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -235,7 +236,7 @@
                 return;
             }
 
-            fetch("http://localhost:8000/api/rol_usuario", {
+            fetch(`${API_BASE}/api/rol_usuario`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -248,7 +249,7 @@
                     const errorMsg = obtenerMensajeError(createResult);
                     throw new Error(`No se pudo crear la nueva asignación: ${errorMsg}`);
                 }
-                return fetch(`http://localhost:8000/api/rol_usuario/usuario_id/${usuarioAntiguo}/rol_id/${rolAntiguo}`, {
+                return fetch(`${API_BASE}/api/rol_usuario/usuario_id/${usuarioAntiguo}/rol_id/${rolAntiguo}`, {
                     method: "DELETE"
                 });
             })
@@ -267,7 +268,7 @@
                 alert("Error al actualizar la asignación: " + error.message);
             });
         } else {
-            fetch("http://localhost:8000/api/rol_usuario", {
+            fetch(`${API_BASE}/api/rol_usuario`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

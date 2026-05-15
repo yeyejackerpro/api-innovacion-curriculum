@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Enfoques</title>
 <link rel="stylesheet" href="styles.css">
+<script src="config.js"></script>
 </head>
 <body>
 
@@ -33,7 +34,7 @@
     let registroEnEdicion = null;
 
     function cargarTabla() {
-        fetch("http://localhost:8000/api/enfoque")
+        fetch(`${API_BASE}/api/enfoque`)
         .then(response => {
             console.log("Response status:", response.status, "OK:", response.ok);
             if (response.status === 204) {
@@ -100,7 +101,7 @@
         if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
             return;
         }
-        fetch(`http://localhost:8000/api/enfoque/id/${id}`, {
+        fetch(`${API_BASE}/api/enfoque/id/${id}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -147,8 +148,8 @@
         
         const metodo = registroEnEdicion ? "PUT" : "POST";
         const url = registroEnEdicion 
-            ? `http://localhost:8000/api/enfoque/id/${idRegistro}` 
-            : "http://localhost:8000/api/enfoque";
+            ? `${API_BASE}/api/enfoque/id/${idRegistro}` 
+            : `${API_BASE}/api/enfoque`;
 
         fetch(url, {
             method: metodo,

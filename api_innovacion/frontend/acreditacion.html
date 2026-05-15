@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Acreditaciones</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="stylesheet" href="styles.css">    <script src="config.js"></script></head>
 <body>
 <div class="container">
     <h1>Acreditaciones</h1>
@@ -44,7 +43,7 @@
     let registroEnEdicion = null;
 
     function cargarProgramas() {
-        fetch("http://localhost:8000/api/programa")
+        fetch(`${API_BASE}/api/programa`)
         .then(response => {
             console.log("Response programa status:", response.status);
             if (response.status === 204) return { datos: [] };
@@ -70,7 +69,7 @@
     }
 
     function cargarTabla() {
-        fetch("http://localhost:8000/api/acreditacion")
+        fetch(`${API_BASE}/api/acreditacion`)
         .then(response => {
             console.log("Response status:", response.status, "OK:", response.ok);
             if (response.status === 204) {
@@ -145,7 +144,7 @@
         if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
             return;
         }
-        fetch(`http://localhost:8000/api/acreditacion/resolucion/${resolucion}`, {
+        fetch(`${API_BASE}/api/acreditacion/resolucion/${resolucion}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -193,8 +192,8 @@
         
         const metodo = registroEnEdicion ? "PUT" : "POST";
         const url = registroEnEdicion 
-            ? `http://localhost:8000/api/acreditacion/resolucion/${resolucionRegistro}` 
-            : "http://localhost:8000/api/acreditacion";
+            ? `${API_BASE}/api/acreditacion/resolucion/${resolucionRegistro}` 
+            : `${API_BASE}/api/acreditacion`;
 
         fetch(url, {
             method: metodo,

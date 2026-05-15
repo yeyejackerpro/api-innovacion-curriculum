@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Facultades</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
 </head>
 <body>
 <div class="container">
@@ -45,7 +46,7 @@
     let registroEnEdicion = null;
 
     function cargarUniversidades() {
-        fetch("http://localhost:8000/api/universidad")
+        fetch(`${API_BASE}/api/universidad`)
         .then(response => {
             console.log("Response universidad status:", response.status);
             if (response.status === 204) return { datos: [] };
@@ -71,7 +72,7 @@
     }
 
     function cargarTabla() {
-        fetch("http://localhost:8000/api/facultad")
+        fetch(`${API_BASE}/api/facultad`)
         .then(response => {
             console.log("Response status:", response.status, "OK:", response.ok);
             if (response.status === 204) {
@@ -142,7 +143,7 @@
         if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
             return;
         }
-        fetch(`http://localhost:8000/api/facultad/id/${id}`, {
+        fetch(`${API_BASE}/api/facultad/id/${id}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -190,8 +191,8 @@
         
         const metodo = registroEnEdicion ? "PUT" : "POST";
         const url = registroEnEdicion 
-            ? `http://localhost:8000/api/facultad/id/${idRegistro}` 
-            : "http://localhost:8000/api/facultad";
+            ? `${API_BASE}/api/facultad/id/${idRegistro}` 
+            : `${API_BASE}/api/facultad`;
 
         fetch(url, {
             method: metodo,

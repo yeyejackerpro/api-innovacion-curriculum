@@ -8,7 +8,7 @@
 <body>
 <div class="container">
     <h1>Gestión de Alianzas</h1>
-    <form action="http://localhost:8000/api/alianza" method="POST">
+    <form action="http://localhost:8000/api/alianza" method="POST" onsubmit="this.action = `${API_BASE}/api/alianza`;">
         <select name="aliado_nit" id="aliado_nit" required>
             <option value="">Seleccione Aliado (FK)...</option>
             <option value="1">Aliado Ejemplo</option>

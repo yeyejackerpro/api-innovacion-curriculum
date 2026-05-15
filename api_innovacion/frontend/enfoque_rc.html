@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <title>Asignación Registro Calificado - Enfoque</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
 </head>
 <body>
 <div class="container">
     <h1>Asignar Enfoque a Registro Calificado</h1>
-    <form action="http://localhost:8000/api/enfoque_rc" method="POST">
+    <form action="http://localhost:8000/api/enfoque_rc" method="POST" onsubmit="this.action = `${API_BASE}/api/enfoque_rc`;">
         <select name="codigo_rc" id="codigo_rc" required>
             <option value="">Seleccione Registro Calificado (FK)...</option>
             <option value="1">RC Ejemplo</option>

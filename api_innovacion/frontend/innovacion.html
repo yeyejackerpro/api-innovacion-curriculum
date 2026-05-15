@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Innovación</title>
 <link rel="stylesheet" href="styles.css">
+<script src="config.js"></script>
 </head>
 <body>
 
@@ -34,7 +35,7 @@
     let registroEnEdicion = null;
 
     function cargarTabla() {
-        fetch("http://localhost:8000/api/car_innovacion")
+        fetch(`${API_BASE}/api/car_innovacion`)
         .then(response => {
             console.log("Response status:", response.status, "OK:", response.ok);
             if (response.status === 204) {
@@ -103,7 +104,7 @@
         if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
             return;
         }
-        fetch(`http://localhost:8000/api/car_innovacion/id/${id}`, {
+        fetch(`${API_BASE}/api/car_innovacion/id/${id}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -150,8 +151,8 @@
         
         const metodo = registroEnEdicion ? "PUT" : "POST";
         const url = registroEnEdicion 
-            ? `http://localhost:8000/api/car_innovacion/id/${idRegistro}` 
-            : "http://localhost:8000/api/car_innovacion";
+            ? `${API_BASE}/api/car_innovacion/id/${idRegistro}` 
+            : `${API_BASE}/api/car_innovacion`;
 
         fetch(url, {
             method: metodo,

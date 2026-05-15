@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Actividad Académica en Registro Calificado</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
 </head>
 <body>
 <div class="container">
@@ -43,7 +44,7 @@
 
     function cargarSelects() {
         // Cargar Registro Calificado
-        fetch("http://localhost:8000/api/registro_calificado")
+        fetch(`${API_BASE}/api/registro_calificado`)
         .then(response => {
             console.log("Response registro_calificado status:", response.status);
             if (response.status === 204) return { datos: [] };
@@ -68,7 +69,7 @@
         });
 
         // Cargar Actividad Académica
-        fetch("http://localhost:8000/api/activ_academica")
+        fetch(`${API_BASE}/api/activ_academica`)
         .then(response => {
             console.log("Response activ_academica status:", response.status);
             if (response.status === 204) return { datos: [] };
@@ -94,7 +95,7 @@
     }
 
     function cargarTabla() {
-        fetch("http://localhost:8000/api/aa_rc")
+        fetch(`${API_BASE}/api/aa_rc`)
         .then(response => {
             console.log("Response status:", response.status, "OK:", response.ok);
             if (response.status === 204) {
@@ -164,7 +165,7 @@
         if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
             return;
         }
-        fetch(`http://localhost:8000/api/aa_rc/id/${id}`, {
+        fetch(`${API_BASE}/api/aa_rc/id/${id}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -213,8 +214,8 @@
         
         const metodo = registroEnEdicion ? "PUT" : "POST";
         const url = registroEnEdicion 
-            ? `http://localhost:8000/api/aa_rc/id/${idRegistro}` 
-            : "http://localhost:8000/api/aa_rc";
+            ? `${API_BASE}/api/aa_rc/id/${idRegistro}` 
+            : `${API_BASE}/api/aa_rc`;
 
         fetch(url, {
             method: metodo,

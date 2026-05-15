@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Registros Calificados</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="stylesheet" href="styles.css">    <script src="config.js"></script></head>
 <body>
 <div class="container">
     <h1>Registros Calificados</h1>
@@ -46,7 +45,7 @@
 
 <script>
     function cargarProgramas() {
-        fetch("http://localhost:8000/api/programa")
+        fetch(`${API_BASE}/api/programa`)
         .then(response => {
             console.log("Response programa status:", response.status);
             if (response.status === 204) return { datos: [] };
@@ -72,7 +71,7 @@
     }
 
     function cargarTabla() {
-        fetch("http://localhost:8000/api/registro_calificado")
+        fetch(`${API_BASE}/api/registro_calificado`)
         .then(response => {
             console.log("Response status:", response.status, "OK:", response.ok);
             if (response.status === 204) {
@@ -152,7 +151,7 @@
         if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
             return;
         }
-        fetch(`http://localhost:8000/api/registro_calificado/codigo/${codigo}`, {
+        fetch(`${API_BASE}/api/registro_calificado/codigo/${codigo}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -202,8 +201,8 @@
         
         const metodo = registroEnEdicion ? "PUT" : "POST";
         const url = registroEnEdicion 
-            ? `http://localhost:8000/api/registro_calificado/codigo/${codigoRegistro}` 
-            : "http://localhost:8000/api/registro_calificado";
+            ? `${API_BASE}/api/registro_calificado/codigo/${codigoRegistro}` 
+            : `${API_BASE}/api/registro_calificado`;
 
         fetch(url, {
             method: metodo,

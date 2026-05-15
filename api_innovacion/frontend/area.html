@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Área de Conocimiento</title>
 <link rel="stylesheet" href="styles.css">
+<script src="config.js"></script>
 </head>
 <body>
 
@@ -34,7 +35,7 @@
     let registroEnEdicion = null;
 
     function cargarTabla() {
-        fetch("http://localhost:8000/api/area_conocimiento")
+        fetch(`${API_BASE}/api/area_conocimiento`)
         .then(response => {
             console.log("Response status:", response.status, "OK:", response.ok);
             if (response.status === 204) {
@@ -103,7 +104,7 @@
         if (!confirm("¿Estás seguro de que deseas eliminar este registro?")) {
             return;
         }
-        fetch(`http://localhost:8000/api/area_conocimiento/id/${id}`, {
+        fetch(`${API_BASE}/api/area_conocimiento/id/${id}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -150,8 +151,8 @@
         
         const metodo = registroEnEdicion ? "PUT" : "POST";
         const url = registroEnEdicion 
-            ? `http://localhost:8000/api/area_conocimiento/id/${idRegistro}` 
-            : "http://localhost:8000/api/area_conocimiento";
+            ? `${API_BASE}/api/area_conocimiento/id/${idRegistro}` 
+            : `${API_BASE}/api/area_conocimiento`;
 
         fetch(url, {
             method: metodo,
