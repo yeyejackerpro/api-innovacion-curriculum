@@ -11,7 +11,7 @@ const API_CONFIG = {
             return 'http://localhost:8000';
         } else {
             // Producción (Render u otro servidor)
-            return 'https://api-innovacion-curriculum-in0c.onrender.com';
+            return 'https://api-innovacion-curriculum.onrender.com';
         }
     },
     
