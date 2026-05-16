@@ -680,6 +680,13 @@
     </footer>
 
   </div><!-- fin .dashboard -->
+<script>
+  // Despertar el backend al cargar la página
+  fetch('https://api-innovacion-curriculum.onrender.com/')
+    .then(() => console.log('Backend despierto'))
+    .catch(() => console.log('Despertando backend...'));
+</script>
 
+</body>
 </body>
 </html>
