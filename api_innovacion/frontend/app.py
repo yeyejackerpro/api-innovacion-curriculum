@@ -10,9 +10,10 @@ CORS(app)
 # En desarrollo: http://localhost:8000
 # En producción (Render): https://api-innovacion-curriculum-in0c.onrender.com
 if os.getenv('FLASK_ENV') == 'production' or os.getenv('RENDER'):
-    BACKEND_URL = 'https://api-innovacion-curriculum-in0c.onrender.com'
+    BACKEND_URL = 'https://api-innovacion-curriculum.onrender.com'
 else:
     BACKEND_URL = os.getenv('BACKEND_URL', 'http://localhost:8000')
+
 
 @app.route('/')
 def index():
