@@ -37,4 +37,32 @@ class ProveedorConexion:
         if not cadena:
             raise ValueError(f"Cadena de conexión vacía para proveedor '{provider}'")
         
+        # Intento rápido de reachability al host de BD (fallar rápido si es inaccesible).
+        try:
+            from urllib.parse import urlparse
+            import socket
+            parsed = urlparse(cadena)
+            host = parsed.hostname
+            port = parsed.port
+            # Puerto por defecto según esquema
+            if not port:
+                if parsed.scheme and 'postgres' in parsed.scheme:
+                    port = 5432
+                elif parsed.scheme and ('mysql' in parsed.scheme or 'mariadb' in parsed.scheme):
+                    port = 3306
+                elif parsed.scheme and 'sqlserver' in parsed.scheme:
+                    port = 1433
+            if host:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.settimeout(3.0)
+                try:
+                    s.connect((host, port))
+                    s.close()
+                except Exception as ex:
+                    raise ValueError(f"No se puede alcanzar host DB {host}:{port} — {ex}")
+        except Exception:
+            # Si la comprobación falla por parsing o permisos, no impedir la ejecución;
+            # devolvemos la cadena y dejamos que el engine maneje el error real.
+            pass
+
         return cadena
