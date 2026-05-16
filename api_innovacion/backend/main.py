@@ -1,8 +1,5 @@
-from pathlib import Path
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 import logging
 
 from config import get_settings
@@ -43,13 +40,8 @@ app.add_middleware(
 # Conectando los routers
 app.include_router(entidades_controller)
 
-# Montar el frontend estático
-frontend_dir = Path(__file__).resolve().parent.parent / "frontend"
-if frontend_dir.exists():
-    app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
-
-@app.get("/health", tags=["Diagnóstico"])
-async def health():
+@app.get("/", tags=["Diagnóstico"])
+async def root():
     """Retorna un mensaje básico para verificar que la API está activa."""
     return {"message": "API CRUD Iniciada - Todo conectado correctamente.",
             "version": "1.0.0",
