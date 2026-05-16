@@ -15,16 +15,9 @@ Endpoints disponibles:
 
 
 from typing import Any
-import asyncio
-import logging
 from fastapi import APIRouter, HTTPException, Query, Request, Response
 from config import get_settings
 from servicios.fabrica_repositorios import crear_servicio_crud
-
-logger = logging.getLogger("api-innovacion.entidades")
-
-# Timeout para operaciones de BD (segundos)
-DB_TIMEOUT = 8
 
 
 # Router de FastAPI (agrupa todos los endpoints bajo /api)
@@ -84,11 +77,7 @@ async def listar(
     """
     try: 
         servicio = crear_servicio_crud()
-        try:
-            filas = await asyncio.wait_for(servicio.listar(tabla, esquema, limite), timeout=DB_TIMEOUT)
-        except asyncio.TimeoutError as ex:
-            logger.error("Timeout al listar %s: %s", tabla, ex)
-            raise HTTPException(status_code=504, detail={"estado":504, "mensaje":"Timeout al conectar con la base de datos."})
+        filas = await servicio.listar(tabla, esquema, limite)
 
         # Si hay datos, retornar 204 (sin contenido)
         if len(filas) == 0:
@@ -137,11 +126,7 @@ async def obtener_por_clave(
     """
     try:
         servicio = crear_servicio_crud()
-        try:
-            filas = await asyncio.wait_for(servicio.obtener_por_clave(tabla, nombre_clave, valor, esquema), timeout=DB_TIMEOUT)
-        except asyncio.TimeoutError as ex:
-            logger.error("Timeout al obtener_por_clave %s.%s=%s: %s", tabla, nombre_clave, valor, ex)
-            raise HTTPException(status_code=504, detail={"estado":504, "mensaje":"Timeout al conectar con la base de datos."})
+        filas = await servicio.obtener_por_clave(tabla, nombre_clave, valor, esquema)
 
         if len(filas) == 0:
             raise HTTPException(status_code=404, detail={
@@ -206,11 +191,7 @@ async def crear(
             })
 
         servicio = crear_servicio_crud()
-        try:
-            creado = await asyncio.wait_for(servicio.crear(tabla, datos_entidad, esquema, campos_encriptar), timeout=DB_TIMEOUT)
-        except asyncio.TimeoutError as ex:
-            logger.error("Timeout al crear en %s: %s", tabla, ex)
-            raise HTTPException(status_code=504, detail={"estado":504, "mensaje":"Timeout al conectar con la base de datos."})
+        creado = await servicio.crear(tabla, datos_entidad, esquema, campos_encriptar)
 
         if creado:
             return {
@@ -276,14 +257,9 @@ async def actualizar(
             })
 
         servicio = crear_servicio_crud()
-        try:
-            filas_afectadas = await asyncio.wait_for(
-                servicio.actualizar(tabla, nombre_clave, valor_clave, datos_entidad, esquema, campos_encriptar),
-                timeout=DB_TIMEOUT
-            )
-        except asyncio.TimeoutError as ex:
-            logger.error("Timeout al actualizar %s %s=%s: %s", tabla, nombre_clave, valor_clave, ex)
-            raise HTTPException(status_code=504, detail={"estado":504, "mensaje":"Timeout al conectar con la base de datos."})
+        filas_afectadas = await servicio.actualizar(
+            tabla, nombre_clave, valor_clave, datos_entidad, esquema, campos_encriptar
+        )
 
         if filas_afectadas > 0:
             return {
@@ -332,11 +308,7 @@ async def eliminar(
     """
     try:
         servicio = crear_servicio_crud()
-        try:
-            filas_eliminadas = await asyncio.wait_for(servicio.eliminar(tabla, nombre_clave, valor_clave, esquema), timeout=DB_TIMEOUT)
-        except asyncio.TimeoutError as ex:
-            logger.error("Timeout al eliminar %s %s=%s: %s", tabla, nombre_clave, valor_clave, ex)
-            raise HTTPException(status_code=504, detail={"estado":504, "mensaje":"Timeout al conectar con la base de datos."})
+        filas_eliminadas = await servicio.eliminar(tabla, nombre_clave, valor_clave, esquema)
 
         if filas_eliminadas > 0:
             return {
@@ -383,18 +355,11 @@ async def eliminar_por_dos_claves(
     """
     try:
         servicio = crear_servicio_crud()
-        try:
-            filas_eliminadas = await asyncio.wait_for(
-                servicio.eliminar_por_dos_claves(
-                    tabla, nombre_clave1, valor_clave1,
-                    nombre_clave2, valor_clave2,
-                    esquema
-                ),
-                timeout=DB_TIMEOUT
-            )
-        except asyncio.TimeoutError as ex:
-            logger.error("Timeout al eliminar_por_dos_claves %s: %s", tabla, ex)
-            raise HTTPException(status_code=504, detail={"estado":504, "mensaje":"Timeout al conectar con la base de datos."})
+        filas_eliminadas = await servicio.eliminar_por_dos_claves(
+            tabla, nombre_clave1, valor_clave1,
+            nombre_clave2, valor_clave2,
+            esquema
+        )
 
         if filas_eliminadas > 0:
             return {
@@ -448,14 +413,9 @@ async def verificar_contrasena(
     """
     try:
         servicio = crear_servicio_crud()
-        try:
-            codigo, mensaje = await asyncio.wait_for(
-                servicio.verificar_contrasena(tabla, campo_usuario, campo_contrasena, valor_usuario, valor_contrasena, esquema),
-                timeout=DB_TIMEOUT
-            )
-        except asyncio.TimeoutError as ex:
-            logger.error("Timeout al verificar_contrasena %s: %s", tabla, ex)
-            raise HTTPException(status_code=504, detail={"estado":504, "mensaje":"Timeout al conectar con la base de datos."})
+        codigo, mensaje = await servicio.verificar_contrasena(
+            tabla, campo_usuario, campo_contrasena, valor_usuario, valor_contrasena, esquema
+        )
 
         if codigo == 200:
             return {"estado": 200, "mensaje": mensaje, "usuario": valor_usuario}
