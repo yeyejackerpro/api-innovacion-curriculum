@@ -1,11 +1,17 @@
-services: - type: web name: api-generica-crud env: python plan: free buildCommand: apt-get install -y unixodbc-dev && pip install -r requirements.txt startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT envVars: - key: ENVIRONMENT value: production - key: DB_PROVIDER value: postgres - key: DB_POSTGRES sync: false 
-
 services:
   - type: web
     name: mi-api
     env: python
+    plan: free
     buildCommand: pip install -r requirements.txt
-    # Aquí es donde agregas las librerías de sistema
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DB_PROVIDER
+        value: postgres
+      # Añade aquí DB_POSTGRES u otras cadenas de conexión desde el panel de Render (no en el repo)
+    # Bibliotecas del sistema necesarias para drivers ODBC u otros
     runtimeData:
       packages:
         - unixodbc

@@ -16,11 +16,48 @@ Endpoints disponibles:
 
 from typing import Any
 from fastapi import APIRouter, HTTPException, Query, Request, Response
+from config import get_settings
 from servicios.fabrica_repositorios import crear_servicio_crud
 
 
 # Router de FastAPI (agrupa todos los endpoints bajo /api)
 router = APIRouter(prefix="/api", tags=["Entidades"])
+
+
+@router.get("/diagnostico")
+async def diagnostico():
+    """
+    Endpoint de diagnóstico sencillo que reporta proveedor DB y si hay cadena de conexión
+    (no devuelve secretos — solo booleano indicando si hay cadena definida).
+    """
+    try:
+        settings = get_settings()
+        provider = (settings.database.provider or "").lower().strip()
+        db = settings.database
+
+        mapping = {
+            "postgres": db.postgres,
+            "postgresql": db.postgres,
+            "mysql": db.mysql,
+            "mariadb": db.mariadb,
+            "sqlserver": db.sqlserver,
+            "sqlserverexpress": db.sqlserverexpress,
+            "localdb": db.localdb,
+        }
+
+        cadena = mapping.get(provider, "")
+        tiene_cadena = bool(cadena)
+
+        return {
+            "estado": 200,
+            "entorno": settings.environment,
+            "db_provider": provider,
+            "db_connection_present": tiene_cadena
+        }
+    except Exception as ex:
+        raise HTTPException(status_code=500, detail={
+            "estado": 500, "mensaje": "Error interno en diagnóstico.", "detalle": str(ex)
+        })
 
 
 

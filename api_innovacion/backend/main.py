@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import logging
 
 from config import get_settings
 from controllers import entidades_controller
@@ -8,6 +9,11 @@ from controllers import entidades_controller
 
 # Cargar configuración desde .env
 settings = get_settings()
+
+# Configurar logging básico
+logging.basicConfig(level=logging.DEBUG if settings.debug else logging.INFO)
+logger = logging.getLogger("api-innovacion")
+logger.info(f"Iniciando aplicación en entorno: {settings.environment}")
 
 
 
